@@ -1,0 +1,38 @@
+.mat-toolbar {
+  color: white;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: 100dvw;
+  justify-content: space-between;
+  align-items: center;
+
+  > * {
+    margin: 0, 1rem;
+  }
+  .title {
+    align-self: flex-start;
+    align-self: center;
+    justify-self: center;
+  }
+
+  .navItems {
+    align-self: center;
+    justify-self: center;
+    align-items: center;
+
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    .profile-image-container {
+      height: 2.5rem;
+      width: 2.5rem;
+      .profile-image {
+        height: 2.5rem;
+        border-radius: 50%;
+      }
+    }
+  }
+}

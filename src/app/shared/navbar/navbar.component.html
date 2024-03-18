@@ -1,0 +1,23 @@
+<nav>
+  <mat-toolbar color="primary">
+    <span class="title">Recipe Reverie</span>
+
+    <div class="navItems">
+      <a
+        mat-icon-button
+        aria-label="Home Button"
+        [routerLink]="['/home']"
+        routerLinkActive="active"
+      >
+        <mat-icon>home</mat-icon>
+      </a>
+      <div class="profile-image-container">
+        <img
+          class="profile-image"
+          src="https://i.pravatar.cc/300"
+          alt="Avatar"
+        />
+      </div>
+    </div>
+  </mat-toolbar>
+</nav>
