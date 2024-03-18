@@ -2,97 +2,20 @@
 @use "@angular/material" as mat;
 // Plus imports for other components in your app.
 
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
+// Include the common styles for Angular Material.
 @include mat.core();
 
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-$equity-brown-palette: (
-  50: #fbebee,
-  100: #f7cdd3,
-  200: #e29a9d,
-  300: #d47477,
-  400: #dd5658,
-  500: #e14742,
-  600: #d23f40,
-  700: #c03639,
-  800: #b33133,
-  900: #a32929,
+// Import variables from _variables.scss
+@import "app/shared/utilities/variables";
 
-  contrast: (
-    50: rgba(black, 0.87),
-    100: rgba(black, 0.87),
-    200: rgba(black, 0.87),
-    300: rgba(black, 0.87),
-    400: white,
-    500: white,
-    600: white,
-    700: white,
-    800: white,
-    900: white,
-  ),
-);
-
-$equity-gray-palette: (
-  50: #f7f9fc,
-  100: #eff2f5,
-  200: #e6e8eb,
-  300: #d6d8db,
-  400: #b2b4b7,
-  500: #929497,
-  600: #6a6c6f,
-  700: #57585b,
-  800: #383a3c,
-  900: #181a1c,
-
-  contrast: (
-    50: rgba(black, 0.87),
-    100: rgba(black, 0.87),
-    200: rgba(black, 0.87),
-    300: rgba(black, 0.87),
-    400: rgba(black, 0.87),
-    500: rgba(black, 0.87),
-    600: white,
-    700: white,
-    800: white,
-    900: white,
-  ),
-);
-
-$equity-darker-gray-palette: (
-  50: #f9fafe,
-  100: #f4f5f9,
-  200: #eeeff2,
-  300: #e0e1e4,
-  400: #bdbec1,
-  500: #bdbec1,
-  600: #757679,
-  700: #616265,
-  800: #424346,
-  900: #212224,
-
-  contrast: (
-    50: rgba(black, 0.87),
-    100: rgba(black, 0.87),
-    200: rgba(black, 0.87),
-    300: rgba(black, 0.87),
-    400: rgba(black, 0.87),
-    500: rgba(black, 0.87),
-    600: white,
-    700: white,
-    800: white,
-    900: white,
-  ),
-);
-
+// Define palettes
 $recipe-reverie-primary: mat.define-palette($equity-brown-palette);
 $recipe-reverie-accent: mat.define-palette($equity-gray-palette, 600, 300, 900);
 
 // The warn palette is optional (defaults to red).
 $recipe-reverie-warn: mat.define-palette(mat.$red-palette);
 
-// Create the theme object. A theme consists of configurations for individual
-// theming systems such as "color" or "typography".
+// Create the theme object.
 $recipe-reverie-theme: mat.define-light-theme(
   (
     color: (
@@ -113,8 +36,27 @@ $recipe-reverie-theme: mat.define-light-theme(
 html,
 body {
   height: 100%;
-}
-body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.container {
+  margin: 0 auto;
+  width: 100%;
+
+  @media (min-width = $--sm) {
+    max-width: $--sm;
+  }
+  @media (min-width = $--md) {
+    max-width: $--md;
+  }
+  @media (min-width = $--lg) {
+    max-width: $--lg;
+  }
+  @media (min-width = $--xl) {
+    max-width: $--xl;
+  }
+  @media (min-width = $--2xl) {
+    max-width: $--2xl;
+  }
 }

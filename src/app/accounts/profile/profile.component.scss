@@ -1,0 +1,193 @@
+// Import variables from _variables.scss
+@import "../../shared/utilities/variables";
+
+$--bg-color-main: rgba(226, 232, 240, 1);
+
+.profile-top-bg {
+  position: relative;
+  display: block;
+  height: 500px;
+
+  .profile-bg-image {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("https://images.unsplash.com/photo-1528462798454-9f559fed2996?q=80&w=1988&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    background-position: center;
+    background-size: cover;
+
+    .black-overlay {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      opacity: 50%;
+      background-color: black;
+    }
+  }
+
+  .upward-slash {
+    width: 100%;
+    height: 70px;
+
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    position: absolute;
+    pointer-events: none;
+    overflow: hidden;
+
+    transform: translateZ(0px);
+
+    .upward-slash-svg {
+      position: absolute;
+      bottom: 0;
+      overflow: hidden;
+
+      .svg-polygon {
+        color: $--bg-color-main;
+        fill: currentColor;
+      }
+    }
+  }
+}
+
+.profile-main {
+  position: relative;
+  padding: $--s-unit-16 0;
+  background-color: $--bg-color-main;
+
+  .profile-card-container {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 $--s-unit-4;
+
+    .profile-card {
+      position: relative;
+
+      display: flex;
+      flex-direction: column;
+      min-width: 0px;
+
+      overflow-wrap: break-word;
+      background-color: white;
+      width: 100%;
+      margin-bottom: $--s-unit-6;
+
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+        0 8px 10px -6px rgb(0 0 0 / 0.1);
+      border-radius: $--s-unit-2;
+
+      margin-top: -($--s-unit-64);
+
+      .content-wrap {
+        padding: 0 $--s-unit-6;
+
+        .profile-card-header {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+
+          .profile-card-header-image-container {
+            width: full;
+            padding: 0 $--s-unit-4;
+            display: flex;
+            justify-content: center;
+
+            @media (min-width = $--lg) {
+              width: 25%;
+              order: 2;
+            }
+
+            .profile-card-header-image {
+              box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+                0 8px 10px -6px rgb(0 0 0 / 0.1);
+              border-radius: 9999px;
+              height: auto;
+              vertical-align: middle;
+              border-style: none;
+              position: absolute;
+              margin: -($--s-unit-16);
+              margin-left: -$--s-unit-20;
+              max-width: 150px;
+
+              @media (min-width = $--lg) {
+                margin-left: -$--s-unit-16;
+              }
+            }
+          }
+
+          .profile-card-header-actions {
+            width: full;
+            padding: 0 $--s-unit-4;
+
+            @media (min-width = $--lg) {
+              width: calc(100% * 4 / 12);
+              order: 3;
+              text-align: right;
+              align-self: center;
+            }
+
+            .wrapper {
+              padding: $--s-unit-6 $--s-unit-3;
+              margin-top: $--s-unit-32;
+
+              @media (min-width = $--sm) {
+                margin-top: 0;
+              }
+
+              .action-button {
+                background-color: $color-pink-500;
+
+                :active {
+                  background-color: $color-pink-600;
+                }
+
+                text-transform: uppercase;
+                color: $color-white;
+                font-weight: 700;
+
+                box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+                  0 1px 2px -1px rgb(0 0 0 / 0.1);
+
+                :hover {
+                  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+                    0 2px 4px -2px rgb(0 0 0 / 0.1);
+                }
+
+                font-size: $--s-unit-3;
+                line-height: $--s-unit-4;
+
+                padding: $--s-unit-2 $--s-unit-4;
+
+                border-radius: $--s-unit-1;
+
+                outline-style: none;
+
+                :focus {
+                  outline-style: none;
+                }
+
+                @media (min-width: $--sm) {
+                  margin-right: $--s-unit-2;
+                }
+
+                margin-bottom: $--s-unit-1;
+
+                transition-timing-function: linear;
+                transition-property: all;
+                transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+                transition-duration: 150ms;
+
+                transition-duration: 150ms;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
