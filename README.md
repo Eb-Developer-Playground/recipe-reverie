@@ -80,6 +80,13 @@ Recipe Reverie is a dynamic platform for sharing and discovering delightful reci
 9. **Style Guide:**
    - [ ] Define and document a style guide for consistent formatting, naming conventions, and coding standards across the project, ensuring readability and maintainability.
 
+### Left-over tasts
+
+10. **Finalize Home Page Design**
+
+- [ ] Pick final design
+- [ ] Implement design
+
 ## Getting Started:
 
 To start developing with Angular for Recipe Reverie, follow these steps:

@@ -1,0 +1,133 @@
+$--header-text-color: white;
+
+header {
+  width: 100dvw;
+  height: 100dvh;
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+
+  overflow: hidden;
+
+  background-image: url("https://images.unsplash.com/photo-1529940316268-e245e031bcd1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+
+  backdrop-filter: blur(90px);
+  -webkit-backdrop-filter: blur(90px);
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  h1,
+  h2 {
+    color: $--header-text-color;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    text-shadow: 10px 20px 40px #ffb414;
+  }
+
+  h2 {
+    font-weight: 200;
+  }
+
+  .cards {
+    width: 85%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+
+    .card {
+      border-left: 1px solid #ffb41488;
+      border-top: 1px solid #ffb41488;
+      border-bottom: 1px solid #000000;
+      border-right: 1px solid #000000;
+
+      width: 150px;
+      padding: 16px;
+      margin: 8px;
+
+      background: linear-gradient(275deg, #ffb41400 40%, #ffb41422 100%);
+      backdrop-filter: blur(2px);
+
+      color: white;
+
+      border-radius: 16px;
+
+      transition: all 0.5s ease;
+      &:hover {
+        transition: all 0.5s ease;
+        backdrop-filter: blur(5px);
+      }
+
+      .card-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        h1 {
+          font-size: 1rem;
+          margin: 0;
+          margin-left: 8px;
+          padding: 0;
+        }
+
+        img {
+          height: 24px;
+        }
+      }
+
+      .card-body {
+        // display: none;
+
+        p {
+          font-weight: 100;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+  .explore {
+    color: white;
+    position: absolute;
+    left: -16px;
+    bottom: 150px;
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    transform: rotate(90deg);
+    padding: 0;
+    text-transform: uppercase;
+
+    img {
+      filter: invert(100%);
+    }
+  }
+}
+
+@media screen and (min-width: 480px) {
+  .card {
+    width: 250px;
+
+    .card-body {
+      display: block;
+    }
+  }
+}
+
+@media screen and (min-width: 640px) {
+  h1 {
+    font-size: 9vw;
+  }
+}
+
+@media screen and (min-width: 768px) {
+}
