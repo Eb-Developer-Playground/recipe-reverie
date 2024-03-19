@@ -13,8 +13,14 @@ export class MockBackendService {
   PASSWORD_INCORRECT = 'Password is incorrect';
 
   auth() {
-    return new Promise((resolve) => {
+    return new Promise<string | null>((resolve) => {
       resolve(this.getAuth());
+    });
+  }
+
+  getEmail() {
+    return new Promise<string | null>((resolve) => {
+      resolve(this.getSessionEmail());
     });
   }
 
@@ -65,8 +71,9 @@ export class MockBackendService {
 
       if (decrypted != expectedResult) reject(this.PASSWORD_INCORRECT);
 
-      // If no failures, set the session auth and resolve as true
+      // If no failures, set the session auth & email, and resolve as true
       this.setAuth(finalAuth);
+      this.setSessionEmail(email);
       resolve(true);
     });
   }
@@ -74,7 +81,9 @@ export class MockBackendService {
   signOut() {
     return new Promise((resolve, reject) => {
       try {
-        resolve(this.removeAuth());
+        this.removeAuth();
+        this.removeSessionEmail();
+        resolve(true);
       } catch (error) {
         reject(error);
       }
@@ -102,12 +111,20 @@ export class MockBackendService {
   private setAuth(hash: string) {
     this.storageService.writeToStorage('sessionAuth', hash);
   }
-
   private getAuth() {
-    return this.storageService.readFromStorage('sessionAuth');
+    return this.storageService.readFromStorage('sessionAuth') as string;
   }
-
   private removeAuth() {
     this.storageService.delete('sessionAuth');
+  }
+
+  private setSessionEmail(email: string) {
+    this.storageService.writeToStorage('sessionEmail', email);
+  }
+  private getSessionEmail() {
+    return this.storageService.readFromStorage('sessionEmail');
+  }
+  private removeSessionEmail() {
+    this.storageService.delete('sessionEmail');
   }
 }

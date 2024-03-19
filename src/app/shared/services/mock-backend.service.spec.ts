@@ -161,13 +161,51 @@ describe('MockBackendService', () => {
   describe('signOut()', () => {
     it('should sign the user out', async () => {
       const testToken = 'testToken';
+      const testEmail = 'example@email.com';
       localStorage.setItem('sessionAuth', testToken);
+      localStorage.setItem('sessionEmail', testEmail);
 
       await service.signOut();
 
-      let sessionAuth = localStorage.getItem('sessionAuth');
+      const sessionAuth = localStorage.getItem('sessionAuth');
+      const sessionEmail = localStorage.getItem('sessionEmail');
 
       expect(sessionAuth).toBeNull();
+      expect(sessionEmail).toBeNull();
+    });
+  });
+
+  describe('Auth()', () => {
+    it('should return auth when signed in', async () => {
+      const testToken = 'testToken';
+      localStorage.setItem('sessionAuth', testToken);
+
+      const auth = await service.auth();
+
+      expect(auth).toEqual(testToken);
+    });
+
+    it('should return null when not signed in', async () => {
+      let auth = await service.auth();
+
+      expect(auth).toBeNull();
+    });
+  });
+
+  describe('getEmail()', () => {
+    it('should return email when signed in', async () => {
+      const testEmail = 'email@test.com';
+      localStorage.setItem('sessionEmail', testEmail);
+
+      const email = await service.getEmail();
+
+      expect(email).toEqual(testEmail);
+    });
+
+    it('should return null when not signed in', async () => {
+      let email = await service.getEmail();
+
+      expect(email).toBeNull();
     });
   });
 });
