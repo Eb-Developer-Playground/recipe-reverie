@@ -8,11 +8,9 @@
 // Import variables from _variables.scss
 @import "app/shared/utilities/variables";
 
-// Define palettes
+// Define Angular Material palettes
 $recipe-reverie-primary: mat.define-palette($equity-brown-palette);
 $recipe-reverie-accent: mat.define-palette($equity-gray-palette, 600, 300, 900);
-
-// The warn palette is optional (defaults to red).
 $recipe-reverie-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object.
@@ -33,6 +31,7 @@ $recipe-reverie-theme: mat.define-light-theme(
 
 /* You can add global styles to this file, and also import other style files */
 
+// Global container class that is responsive, to mitigate fluid window width
 .container {
   margin: 0 auto;
   width: 100%;
