@@ -8,15 +8,24 @@ describe('AuthService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(AuthService);
+    localStorage.clear();
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+  describe('Default behaviour', () => {
+    it('should be created', () => {
+      expect(service).toBeTruthy();
+    });
 
-  it('should have an auth state', () => {
-    const auth = service.authState();
+    it('should have an auth state', () => {
+      const auth = service.authState();
 
-    expect(auth).toBeDefined();
+      expect(auth).toBeDefined();
+    });
+
+    it('should be invalid by default', () => {
+      const auth = service.authState();
+
+      expect(auth?.valid).toEqual(false);
+    });
   });
 });
