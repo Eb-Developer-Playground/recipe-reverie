@@ -38,6 +38,7 @@ describe('StorageService', () => {
     let readItem = service.readFromStorage(testKey);
 
     expect(readItem).not.toBeNull();
+    expect(readItem).not.toBeUndefined();
     expect(readItem['key']).toEqual(testObject['key']);
   });
 

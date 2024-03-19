@@ -9,7 +9,14 @@ import { StorageService } from './storage.service';
 export class MockBackendService {
   storageService = inject(StorageService);
 
-  auth() {}
+  USER_DOES_NOT_EXIST = 'User does not exist';
+  PASSWORD_INCORRECT = 'Password is incorrect';
+
+  auth() {
+    return new Promise((resolve) => {
+      resolve(this.getAuth());
+    });
+  }
 
   createUser(email: string, password: string, user: User) {
     return new Promise<boolean>((resolve, reject) => {
@@ -39,25 +46,38 @@ export class MockBackendService {
 
   signIn(email: string, password: string) {
     let authToken: string | null = null;
-    let result: string | null = null;
+    let finalAuth: string;
     return new Promise<boolean>((resolve, reject) => {
-      try {
-        authToken = this.getToken(email);
-        if (!authToken) throw new Error('User does not exist');
-      } catch (error) {
-        reject(error);
-      }
+      const expectedResult = email + password;
 
-      try {
-        const expectedResult = email + password;
-        if (!authToken) throw new Error('User does not exist');
-        result = this.decrypt(authToken, password);
-        if (result != expectedResult) throw new Error('Password is incorrect');
-      } catch (error) {
-        reject(error);
-      }
+      // Get the stored token, and reject if it isn't found
+      let result = this.getToken(email);
+      let decrypted: string = '';
+      if (!result) reject(this.USER_DOES_NOT_EXIST);
 
+      authToken = result;
+
+      // Try to decrypt the token with the password, and reject if decryption is incorrect
+      if (authToken && typeof authToken == 'string') {
+        decrypted = this.decrypt(authToken, password);
+        finalAuth = authToken;
+      } else reject(this.USER_DOES_NOT_EXIST);
+
+      if (decrypted != expectedResult) reject(this.PASSWORD_INCORRECT);
+
+      // If no failures, set the session auth and resolve as true
+      this.setAuth(finalAuth);
       resolve(true);
+    });
+  }
+
+  signOut() {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this.removeAuth());
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
@@ -77,5 +97,17 @@ export class MockBackendService {
 
   private decrypt(str: string, key: string) {
     return CryptoJS.AES.decrypt(str, key).toString(CryptoJS.enc.Utf8);
+  }
+
+  private setAuth(hash: string) {
+    this.storageService.writeToStorage('sessionAuth', hash);
+  }
+
+  private getAuth() {
+    return this.storageService.readFromStorage('sessionAuth');
+  }
+
+  private removeAuth() {
+    this.storageService.delete('sessionAuth');
   }
 }
