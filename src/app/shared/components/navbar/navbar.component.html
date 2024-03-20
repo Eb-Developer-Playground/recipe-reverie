@@ -1,21 +1,19 @@
 <nav>
   <mat-toolbar color="primary">
-    <span class="title">Recipe Reverie</span>
+    <span class="title" [routerLink]="['/home']" aria-label="Home Button"
+      >Recipe Reverie</span
+    >
 
     <div class="navItems">
-      <a
-        mat-icon-button
-        aria-label="Home Button"
-        [routerLink]="['/home']"
-        routerLinkActive="active"
-      >
-        <mat-icon>home</mat-icon>
-      </a>
+      @if (!auth()?.valid) {
+      <button mat-button [routerLink]="['/auth/login']">Login</button>
+      }
       <div class="profile-image-container">
         <img
           class="profile-image"
-          src="https://api.dicebear.com/8.x/avataaars/svg?backgroundColor=b6e3f4,c0aede,d1d4f9"
-          alt="Avatar"
+          [src]="auth()?.valid ? profileImage2 : profileImage"
+          [alt]="auth()?.valid ? auth()?.email + ' Avatar' : 'Avatar'"
+          [routerLink]="['/profile']"
         />
       </div>
     </div>
