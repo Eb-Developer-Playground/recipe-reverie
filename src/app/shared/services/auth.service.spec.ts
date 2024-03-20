@@ -26,6 +26,8 @@ describe('AuthService', () => {
       const auth = service.authState();
 
       expect(auth?.valid).toEqual(false);
+      expect(auth?.email.length).toEqual(0);
+      expect(auth?.token.length).toEqual(0);
     });
   });
 });

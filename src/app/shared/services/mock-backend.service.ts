@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
 import { User } from 'shared/interfaces/user.interface';
 import { StorageService } from './storage.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,16 +13,14 @@ export class MockBackendService {
   USER_DOES_NOT_EXIST = 'User does not exist';
   PASSWORD_INCORRECT = 'Password is incorrect';
 
-  auth() {
-    return new Promise<string | null>((resolve) => {
-      resolve(this.getAuth());
-    });
-  }
+  private authSubject = new BehaviorSubject<Auth>({
+    email: '',
+    token: '',
+    valid: false,
+  });
 
-  getEmail() {
-    return new Promise<string | null>((resolve) => {
-      resolve(this.getSessionEmail());
-    });
+  auth() {
+    return this.authSubject.asObservable();
   }
 
   createUser(email: string, password: string, user: User) {
@@ -71,9 +70,14 @@ export class MockBackendService {
 
       if (decrypted != expectedResult) reject(this.PASSWORD_INCORRECT);
 
-      // If no failures, set the session auth & email, and resolve as true
+      // If no failures, set the session auth & email, update the auth observable stream, and resolve as true
       this.setAuth(finalAuth);
       this.setSessionEmail(email);
+      this.authSubject.next({
+        email: email,
+        token: finalAuth,
+        valid: true,
+      });
       resolve(true);
     });
   }
@@ -81,6 +85,11 @@ export class MockBackendService {
   signOut() {
     return new Promise((resolve, reject) => {
       try {
+        this.authSubject.next({
+          email: '',
+          token: '',
+          valid: false,
+        });
         this.removeAuth();
         this.removeSessionEmail();
         resolve(true);
@@ -127,4 +136,10 @@ export class MockBackendService {
   private removeSessionEmail() {
     this.storageService.delete('sessionEmail');
   }
+}
+
+export interface Auth {
+  email: string;
+  token: string;
+  valid: boolean;
 }

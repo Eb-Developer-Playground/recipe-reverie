@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { MockBackendService } from './mock-backend.service';
 import { User } from 'shared/interfaces/user.interface';
 import * as CryptoJS from 'crypto-js';
+import { firstValueFrom } from 'rxjs';
 
 describe('MockBackendService', () => {
   let service: MockBackendService;
@@ -177,35 +178,29 @@ describe('MockBackendService', () => {
 
   describe('Auth()', () => {
     it('should return auth when signed in', async () => {
-      const testToken = 'testToken';
-      localStorage.setItem('sessionAuth', testToken);
+      const testUser: User = {
+        name: 'Name',
+        email: 'email@test.com',
+      };
+      const testPass = 'SecurePass';
 
-      const auth = await service.auth();
+      await service.createUser(testUser.email, testPass, testUser);
+      await service.signIn(testUser.email, testPass);
 
-      expect(auth).toEqual(testToken);
+      const authState = await firstValueFrom(service.auth());
+
+      expect(authState.email).toEqual(testUser.email);
+      expect(authState.token).toBeDefined();
+      expect(authState.valid).toEqual(true);
     });
 
-    it('should return null when not signed in', async () => {
-      let auth = await service.auth();
-
-      expect(auth).toBeNull();
-    });
-  });
-
-  describe('getEmail()', () => {
-    it('should return email when signed in', async () => {
-      const testEmail = 'email@test.com';
-      localStorage.setItem('sessionEmail', testEmail);
-
-      const email = await service.getEmail();
-
-      expect(email).toEqual(testEmail);
-    });
-
-    it('should return null when not signed in', async () => {
-      let email = await service.getEmail();
-
-      expect(email).toBeNull();
+    it('should return invalid auth when not signed in', (done) => {
+      service.auth().subscribe((auth) => {
+        expect(auth.email.length).toEqual(0);
+        expect(auth.token.length).toEqual(0);
+        expect(auth.valid).toEqual(false);
+        done();
+      });
     });
   });
 });

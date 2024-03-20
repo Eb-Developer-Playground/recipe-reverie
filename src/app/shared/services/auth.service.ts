@@ -15,20 +15,10 @@ import { MockBackendService } from './mock-backend.service';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor() {
-    this.auth = {
-      email: '',
-      token: '',
-      valid: false,
-    };
-    this.authSubject = new BehaviorSubject<Auth>(this.auth);
-    this.authState = toSignal(this.authSubject.asObservable());
-  }
+  constructor() {}
   backend = inject(MockBackendService);
 
-  authState: Signal<Auth | undefined>;
-  private auth: Auth;
-  private authSubject: BehaviorSubject<Auth>;
+  authState = toSignal(this.backend.auth());
 
   async login(email: string, password: string) {
     try {
@@ -36,7 +26,6 @@ export class AuthService {
     } catch (error) {
       throw error;
     }
-    return await this.getAuth();
   }
 
   async logout() {
@@ -48,8 +37,6 @@ export class AuthService {
     } catch (error) {
       throw error;
     }
-
-    return await this.getAuth();
   }
 
   async signup(user: User, password: string) {
@@ -58,29 +45,5 @@ export class AuthService {
     } catch (error) {
       throw error;
     }
-
-    return await this.getAuth();
   }
-
-  private async getAuth() {
-    let authToken = await this.backend.auth();
-    let email = await this.backend.getEmail();
-    const valid = authToken && email ? true : false;
-
-    if (authToken && email) {
-      this.auth = {
-        email: email,
-        token: authToken,
-        valid: valid,
-      };
-    }
-
-    this.authSubject.next(this.auth);
-  }
-}
-
-export interface Auth {
-  email: string;
-  token: string;
-  valid: boolean;
 }
