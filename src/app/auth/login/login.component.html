@@ -1,0 +1,82 @@
+<main>
+  <section class="login-page">
+    <div class="container">
+      <div class="login-container">
+        <div>
+          <div class="login-card">
+            <div class="flex">
+              <div class="left-container">
+                <div class="margin">
+                  <div class="logo">
+                    <img src="assets/logo.svg" alt="Recipe Reverie Logo" />
+                    <h4>Recipe Reverie</h4>
+                  </div>
+                  <form [formGroup]="loginForm" (submit)="submit()">
+                    <p>Please log into your account</p>
+
+                    <div class="inputs">
+                      <mat-form-field>
+                        <mat-label>Email Address</mat-label>
+                        <input
+                          matInput
+                          placeholder="me@email.com"
+                          type="email"
+                          formControlName="email"
+                        />
+                        @if (emailControl.invalid) {
+                        <mat-error>{{ getEmailErrors() }}</mat-error>
+                        }
+                      </mat-form-field>
+                      <mat-form-field>
+                        <mat-label>Password</mat-label>
+                        <input
+                          matInput
+                          placeholder="**************"
+                          type="password"
+                          formControlName="password"
+                        />
+                        @if (passwordControl.invalid) {
+                        <mat-error>{{ getPasswordErrors() }}</mat-error>
+                        }
+                      </mat-form-field>
+
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        type="submit"
+                        [disabled]="!formValid"
+                        disabledInteractive
+                        matTooltip="Check your email and password then try again"
+                      >
+                        Log In
+                      </button>
+                    </div>
+
+                    <div class="register">
+                      <p>Don't have an account?</p>
+
+                      <button mat-stroked-button color="primary" type="button">
+                        Register
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="right-container">
+                <div class="margin">
+                  <h4>Explore, Share, and Indulge in Culinary Delights</h4>
+                  <p>
+                    Dive back into a world of culinary delights as you
+                    rediscover your favorite recipes and explore new flavors.
+                    Let's pick up where we left off and embark on another
+                    delicious adventure together!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

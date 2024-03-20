@@ -1,0 +1,186 @@
+@import "../../shared/utilities/variables";
+
+.register-page {
+  height: 100%;
+  background-color: $color-neutral-200;
+  @media (prefers-color-scheme: dark) {
+    background-color: $color-neutral-700;
+  }
+
+  .container {
+    height: 100%;
+    padding: $--s-unit-10;
+  }
+
+  .register-container {
+    display: flex;
+    height: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    color: $color-neutral-800;
+    @media (prefers-color-scheme: dark) {
+      color: $color-neutral-200;
+    }
+
+    > div {
+      width: 100%;
+    }
+
+    .register-card {
+      display: block;
+      border-radius: $--s-unit-2;
+      background-color: $color-white;
+      @media (prefers-color-scheme: dark) {
+        background-color: $color-neutral-800;
+      }
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+        0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+      .flex {
+        gap: 0;
+        @media (min-width: $--lg) {
+          display: flex;
+          flex-wrap: wrap;
+        }
+
+        .left-container {
+          display: flex;
+          align-items: center;
+          border-bottom-right-radius: $--s-unit-2;
+          border-bottom-left-radius: $--s-unit-2;
+
+          @media (min-width: $--lg) {
+            width: calc(100% * 6 / 12);
+            border-start-start-radius: $--s-unit-2;
+            border-end-end-radius: $--s-unit-2;
+            border-bottom-left-radius: $--s-unit-0;
+          }
+
+          background: linear-gradient(
+            to right,
+            #ee7724,
+            #d8363a,
+            #dd3675,
+            #b44593
+          );
+
+          .margin {
+            padding: $--s-unit-6 $--s-unit-4;
+            color: $color-white;
+
+            @media (min-width: $--md) {
+              margin-left: $--s-unit-6;
+              margin-right: $--s-unit-6;
+              padding: $--s-unit-12;
+            }
+
+            h4 {
+              margin-bottom: $--s-unit-6;
+              @include text-size("xl");
+              font-weight: $font-semibold;
+            }
+
+            p {
+              @include text-size("sm");
+            }
+          }
+        }
+
+        .right-container {
+          padding: 0 $--s-unit-4;
+          @media (min-width: $--md) {
+            padding: 0 0;
+          }
+          @media (min-width: $--lg) {
+            width: calc(100% * 6 / 12);
+          }
+
+          .margin {
+            @media (min-width: $--md) {
+              margin: 0 $--s-unit-6;
+              padding: $--s-unit-12;
+            }
+          }
+
+          .logo {
+            text-align: center;
+
+            img {
+              margin-left: auto;
+              margin-right: auto;
+              width: $--s-unit-24;
+            }
+
+            h4 {
+              margin-bottom: $--s-unit-12;
+              margin-top: $--s-unit-6;
+              padding-bottom: $--s-unit-1;
+              @include text-size("xl");
+              font-weight: $font-semibold;
+            }
+          }
+
+          form {
+            > p {
+              margin-bottom: $--s-unit-4;
+              text-align: center;
+            }
+
+            .inputs {
+              position: relative;
+              margin-bottom: $--s-unit-4;
+
+              mat-form-field {
+                width: 100%;
+              }
+
+              .name-container {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                gap: $--s-unit-4;
+
+                mat-form-field {
+                  width: auto;
+                  flex-grow: 1;
+                }
+              }
+
+              input {
+                display: block;
+                width: 100%;
+                min-height: auto;
+                @include text-size("base");
+              }
+
+              button {
+                width: 100%;
+              }
+            }
+
+            .register {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding-bottom: $--s-unit-6;
+
+              p {
+                margin-bottom: $--s-unit-0;
+                margin-inline-end: $--s-unit-2;
+              }
+
+              button {
+                display: inline-block;
+                @include text-size("xs");
+                font-weight: $font-medium;
+                text-transform: uppercase;
+                line-height: 1.5;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,118 @@
+<main>
+  <section class="register-page">
+    <div class="container">
+      <div class="register-container">
+        <div>
+          <div class="register-card">
+            <div class="flex">
+              <div class="left-container">
+                <div class="margin">
+                  <h4>Unleash Your Inner Chef with Recipe Reverie!</h4>
+                  <p>
+                    Get ready to embark on a flavorful journey as you join our
+                    community of food enthusiasts. Sign up now to unlock access
+                    to an array of delicious recipes and connect with
+                    like-minded cooks. Let's create culinary magic together!
+                  </p>
+                </div>
+              </div>
+              <div class="right-container">
+                <div class="margin">
+                  <div class="logo">
+                    <img src="assets/logo.svg" alt="Recipe Reverie Logo" />
+                    <h4>Welcome to Recipe Reverie</h4>
+                  </div>
+                  <form [formGroup]="registerForm" (submit)="submit()">
+                    <div class="inputs">
+                      <div class="name-container">
+                        <mat-form-field>
+                          <mat-label>First Name</mat-label>
+                          <input
+                            matInput
+                            placeholder="First Name"
+                            type="text"
+                            formControlName="firstName"
+                          />
+                          @if (firstNameControl.invalid) {
+                          <mat-error>{{ getFirstNameErrors() }}</mat-error>
+                          }
+                        </mat-form-field>
+                        <mat-form-field>
+                          <mat-label>Last Name</mat-label>
+                          <input
+                            matInput
+                            placeholder="First Name"
+                            type="text"
+                            formControlName="lastName"
+                          />
+                          @if (lastNameControl.invalid) {
+                          <mat-error>{{ getLastNameErrors() }}</mat-error>
+                          }
+                        </mat-form-field>
+                      </div>
+                      <mat-form-field>
+                        <mat-label>Email Address</mat-label>
+                        <input
+                          matInput
+                          placeholder="me@email.com"
+                          type="email"
+                          formControlName="email"
+                        />
+                        @if (emailControl.invalid) {
+                        <mat-error>{{ getEmailErrors() }}</mat-error>
+                        }
+                      </mat-form-field>
+                      <mat-form-field>
+                        <mat-label>Password</mat-label>
+                        <input
+                          matInput
+                          placeholder="**************"
+                          type="password"
+                          formControlName="password"
+                        />
+                        @if (passwordControl.invalid) {
+                        <mat-error>{{ getPasswordErrors() }}</mat-error>
+                        }
+                      </mat-form-field>
+                      <mat-form-field>
+                        <mat-label>Repeat Password</mat-label>
+                        <input
+                          matInput
+                          placeholder="**************"
+                          type="password"
+                          formControlName="confirmPassword"
+                        />
+                        @if (confirmPasswordControl.invalid) {
+                        <mat-error>{{ getConfirmPasswordErrors() }}</mat-error>
+                        }
+                      </mat-form-field>
+
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        type="submit"
+                        [disabled]="!formValid"
+                        disabledInteractive
+                        matTooltip="Check your inputs and try again"
+                      >
+                        Log In
+                      </button>
+                    </div>
+
+                    <div class="register">
+                      <p>Don't have an account?</p>
+
+                      <button mat-stroked-button color="primary" type="button">
+                        Register
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

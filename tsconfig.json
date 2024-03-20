@@ -25,6 +25,8 @@
       "dom"
     ],
     "paths": {
+      "assets/*": ["assets/*"],
+      "auth/*": ["app/auth/*"],
       "home/*": ["app/home/*"],
       "profile/*": ["app/accounts/profile/*"],
       "shared/*": ["app/shared/*"],
