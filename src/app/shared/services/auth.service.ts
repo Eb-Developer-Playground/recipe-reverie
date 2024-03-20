@@ -1,13 +1,5 @@
-import {
-  Injectable,
-  OnInit,
-  Signal,
-  WritableSignal,
-  inject,
-  signal,
-} from '@angular/core';
-import { BehaviorSubject, of } from 'rxjs';
-import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Injectable, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { User } from 'shared/interfaces/user.interface';
 import { MockBackendService } from './mock-backend.service';
 

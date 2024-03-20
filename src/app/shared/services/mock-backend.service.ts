@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import * as CryptoJS from 'crypto-js';
+import CryptoJS from 'crypto-js';
 import { User } from 'shared/interfaces/user.interface';
 import { StorageService } from './storage.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
