@@ -1,5 +1,7 @@
 # Recipe Reverie - Angular
 
+[![wakatime](https://wakatime.com/badge/user/1e845cdf-1e3b-4a90-9249-f58f4620a5bd/project/018e45f4-da71-4ff1-85e8-2643a4760f5c.svg)](https://wakatime.com/badge/user/1e845cdf-1e3b-4a90-9249-f58f4620a5bd/project/018e45f4-da71-4ff1-85e8-2643a4760f5c)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.2.
 
 Recipe Reverie is a dynamic platform for sharing and discovering delightful recipes from around the world. This repository contains the Angular codebase for the Recipe Reverie website, where culinary enthusiasts can explore, contribute, and indulge in their passion for cooking.
