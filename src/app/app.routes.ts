@@ -5,15 +5,15 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () =>
-      import('home/home.component').then((c) => c.HomeComponent),
+      import('@home/home.component').then((c) => c.HomeComponent),
   },
   {
     path: 'profile',
     loadComponent: () =>
-      import('profile/profile.component').then((c) => c.ProfileComponent),
+      import('@profile/profile.component').then((c) => c.ProfileComponent),
   },
   {
     path: 'auth',
-    loadChildren: () => import('auth/auth.routes'),
+    loadChildren: () => import('@auth/auth.routes'),
   },
 ];

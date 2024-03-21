@@ -15,6 +15,7 @@ import { AuthService } from '@shared/services/auth.service';
 import { PasswordMatchValidator } from '@shared/utilities/password-match.validator';
 import { User } from '@shared/interfaces/user.interface';
 import { Router } from '@angular/router';
+import { SnackbarService } from '@shared/services/snackbar.service';
 
 @Component({
   selector: 'app-register',
@@ -34,6 +35,7 @@ export class RegisterComponent {
   formBuilder = inject(FormBuilder);
   authService = inject(AuthService);
   router = inject(Router);
+  snackbar = inject(SnackbarService);
 
   registerForm = this.formBuilder.group(
     {
@@ -75,9 +77,16 @@ export class RegisterComponent {
       const user: User = {
         name: `${firstName} ${lastName}`,
         email: email,
+        id: '',
       };
-      await this.authService.signup(user, password);
-      this.router.navigate(['/auth/login']);
+      try {
+        await this.authService.signup(user, password);
+      } catch (error) {
+        this.snackbar.openSnackBarNoAction(error as string, 4000);
+      }
+      setTimeout(() => {
+        this.router.navigate(['/auth/login']);
+      }, 2000);
     }
     // else // handle null values
   }

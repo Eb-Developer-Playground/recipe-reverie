@@ -26,8 +26,14 @@ export class MockBackendService {
 
   createUser(email: string, password: string, user: User) {
     return new Promise<boolean>((resolve, reject) => {
+      if (this.getToken(email)) {
+        reject('User already exists');
+        return;
+      }
       try {
         const token = this.generateToken(email, password);
+        const id = this.createIdHash(email);
+        user = { ...user, id: id };
         this.storageService.writeToStorage(`${email}: auth`, token);
         this.storageService.writeToStorage(`${email}: details`, user);
       } catch (error) {
@@ -126,6 +132,10 @@ export class MockBackendService {
 
   private encrypt(str: string, key: string) {
     return CryptoJS.AES.encrypt(str, key).toString();
+  }
+
+  private createIdHash(email: string) {
+    return CryptoJS.HmacSHA256(email, email).toString();
   }
 
   private decrypt(str: string, key: string) {

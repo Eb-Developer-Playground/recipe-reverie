@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltip } from '@angular/material/tooltip';
 import { AuthService } from '@shared/services/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { SnackbarService } from '@shared/services/snackbar.service';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +34,7 @@ export class LoginComponent {
   authService = inject(AuthService);
   authState = this.authService.authState;
   router = inject(Router);
+  snackbar = inject(SnackbarService);
 
   loginForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -44,14 +46,26 @@ export class LoginComponent {
 
   async submit() {
     // If any validators aren't satisfied, return immediately
-    if (this.loginForm.invalid) return;
+    if (this.loginForm.invalid) {
+      this.snackbar.openSnackBarNoAction(
+        'Please fill all the fields correctly',
+        3000
+      );
+      return;
+    }
 
     const values = this.loginForm.value;
     const email = values.email;
     const password = values.password;
 
-    if (email && password) await this.authService.login(email, password);
-    this.router.navigate(['/home']);
+    try {
+      if (email && password) await this.authService.login(email, password);
+      else throw new Error('Invalid Values');
+      this.router.navigate(['/home']);
+    } catch (error) {
+      this.snackbar.openSnackBarNoAction(error as string);
+      console.log(error);
+    }
     // else // handle null values
   }
 

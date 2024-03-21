@@ -23,6 +23,7 @@ describe('MockBackendService', () => {
       const testUser: User = {
         name: 'Name',
         email: 'test@email.com',
+        id: 'testID',
         phoneNumber: '0720000000',
       };
       const testPassword = 'SecurePassword1.2.3';
@@ -48,6 +49,29 @@ describe('MockBackendService', () => {
       expect(retreivedUser).not.toBeNull();
       expect(retreivedUser?.email).toEqual(testUser.email);
     });
+
+    it('should not overwrite existing details', async () => {
+      let errorMessage: string | undefined = undefined;
+      const testAuth = 'Test Auth';
+      const testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+      const testPassword = 'SecurePassword1.2.3';
+
+      localStorage.setItem(`${testUser.email}: auth`, testAuth);
+
+      try {
+        await service.createUser(testUser.email, testPassword, testUser);
+      } catch (error) {
+        errorMessage = error as string;
+      }
+
+      expect(errorMessage).toBeDefined();
+      expect(errorMessage).toEqual('User already exists');
+    });
   });
 
   describe('deleteUser()', () => {
@@ -55,6 +79,7 @@ describe('MockBackendService', () => {
       const testUser: User = {
         name: 'Name',
         email: 'test@email.com',
+        id: 'testID',
         phoneNumber: '0720000000',
       };
       const testAuth = 'testAuth';
@@ -80,6 +105,7 @@ describe('MockBackendService', () => {
       const testUser: User = {
         name: 'Name',
         email: 'test@email.com',
+        id: 'testID',
       };
       const testPassword = 'SecurePassword1.2.3';
       const expectedDecrypt = testUser.email + testPassword;
@@ -113,6 +139,7 @@ describe('MockBackendService', () => {
       const testUser: User = {
         name: 'Name',
         email: 'test@email.com',
+        id: 'testID',
       };
       const testPassword = 'SecurePassword1.2.3';
       const expectedDecrypt = testUser.email + testPassword;
@@ -137,6 +164,7 @@ describe('MockBackendService', () => {
       const testUser: User = {
         name: 'Name',
         email: 'test@email.com',
+        id: 'testID',
       };
       const testPassword = 'SecurePassword1.2.3';
       const expectedDecrypt = testUser.email + testPassword;
@@ -181,6 +209,7 @@ describe('MockBackendService', () => {
       const testUser: User = {
         name: 'Name',
         email: 'email@test.com',
+        id: 'testID',
       };
       const testPass = 'SecurePass';
 
