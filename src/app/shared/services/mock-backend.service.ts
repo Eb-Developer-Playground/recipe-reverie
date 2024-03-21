@@ -120,6 +120,77 @@ export class MockBackendService {
     });
   }
 
+  changeEmail(oldEmail: string, newEmail: string, password: string) {
+    let authToken: string | null = null;
+    let finalAuth: string;
+
+    return new Promise<string>(async (resolve, reject) => {
+      const expectedResult = oldEmail + password;
+      // Get the stored token, and reject if it isn't found
+      let result = this.getToken(oldEmail);
+      let decrypted: string = '';
+      if (!result) {
+        reject(this.USER_DOES_NOT_EXIST);
+        return;
+      }
+
+      authToken = result;
+
+      // Try to decrypt the token with the password, and reject if decryption is incorrect
+      if (authToken && typeof authToken == 'string') {
+        decrypted = this.decrypt(authToken, password);
+        finalAuth = authToken;
+      } else {
+        reject(this.USER_DOES_NOT_EXIST);
+        return;
+      }
+
+      if (decrypted != expectedResult) {
+        reject(this.PASSWORD_INCORRECT);
+        return;
+      }
+
+      // If no errors, go on to retrieve the auth details for updating
+      let userDetails: User;
+      try {
+        userDetails = this.getUserDetails(oldEmail) as User;
+      } catch (error) {
+        reject(error);
+        return;
+      }
+
+      // check that the new email is not one already in use
+      if (this.getToken(newEmail)) {
+        reject('Email already in use');
+        return;
+      }
+
+      // If email is free, proceed to update the records, creating new ones and deleting the old ones
+
+      let newId: string;
+
+      try {
+        const newToken = this.generateToken(newEmail, password);
+        newId = this.createIdHash(newEmail);
+        let newUserDetails = { ...userDetails, id: newId, email: newEmail };
+        this.storageService.writeToStorage(`${newEmail}: auth`, newToken);
+        this.storageService.writeToStorage(
+          `${newEmail}: details`,
+          newUserDetails
+        );
+        await this.deleteUser(oldEmail);
+      } catch (error) {
+        reject(error);
+        return;
+      }
+
+      // Update auth details
+      await this.signIn(newEmail, password);
+
+      resolve(newId);
+    });
+  }
+
   private generateToken(email: string, password: string) {
     const data = email + password;
     const token = this.encrypt(data, password);
@@ -148,6 +219,10 @@ export class MockBackendService {
   private getAuth() {
     return this.storageService.readFromStorage('sessionAuth') as string;
   }
+  private getSessionEmail() {
+    return this.storageService.readFromStorage('sessionEmail');
+  }
+
   private removeAuth() {
     this.storageService.delete('sessionAuth');
   }
@@ -155,11 +230,12 @@ export class MockBackendService {
   private setSessionEmail(email: string) {
     this.storageService.writeToStorage('sessionEmail', email);
   }
-  private getSessionEmail() {
-    return this.storageService.readFromStorage('sessionEmail');
-  }
   private removeSessionEmail() {
     this.storageService.delete('sessionEmail');
+  }
+
+  private getUserDetails(email: string) {
+    return this.storageService.readFromStorage(`${email}: details`);
   }
 
   private artificialLoadingDelayAuthNext(auth: Auth) {

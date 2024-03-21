@@ -204,6 +204,51 @@ describe('MockBackendService', () => {
     });
   });
 
+  describe('changeEmail()', () => {
+    it('should change the email successfully', async () => {
+      let testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+      const testPassword = 'SecurePassword1.2.3';
+      const newEmail = 'email@test.com';
+      const token = CryptoJS.AES.encrypt(
+        testUser.email + testPassword,
+        testPassword
+      ).toString();
+      const id = CryptoJS.HmacSHA256(testUser.email, testUser.email).toString();
+      const expectedNewID = CryptoJS.HmacSHA256(newEmail, newEmail).toString();
+      testUser = { ...testUser, id: id };
+
+      localStorage.setItem(`${testUser.email}: auth`, token);
+      localStorage.setItem(
+        `${testUser.email}: details`,
+        JSON.stringify(testUser)
+      );
+
+      const newID = await service.changeEmail(
+        testUser.email,
+        newEmail,
+        testPassword
+      );
+      let newDetails: User = {
+        name: '',
+        email: '',
+        id: '',
+        phoneNumber: '',
+      };
+      let temp = localStorage.getItem(`${newEmail}: details`);
+      if (temp) newDetails = JSON.parse(temp) as User;
+      const oldDetails = localStorage.getItem(`${testUser.email}: details`);
+
+      expect(newID).toEqual(expectedNewID);
+      expect(newDetails.email).toEqual(newEmail);
+      expect(oldDetails).toBeNull();
+    });
+  });
+
   describe('Auth()', () => {
     it('should return auth when signed in', async () => {
       const testUser: User = {
