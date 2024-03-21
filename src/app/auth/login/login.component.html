@@ -40,6 +40,18 @@
                         }
                       </mat-form-field>
 
+                      @if (authState()?.loading) {
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        type="submit"
+                        disabled
+                        disabledInteractive
+                        matTooltip="Loading"
+                      >
+                        Loading
+                      </button>
+                      } @else {
                       <button
                         mat-raised-button
                         color="primary"
@@ -50,12 +62,18 @@
                       >
                         Log In
                       </button>
+                      }
                     </div>
 
                     <div class="register">
                       <p>Don't have an account?</p>
 
-                      <button mat-stroked-button color="primary" type="button">
+                      <button
+                        mat-stroked-button
+                        color="primary"
+                        type="button"
+                        [routerLink]="['/auth/register']"
+                      >
                         Register
                       </button>
                     </div>

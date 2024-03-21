@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { User } from 'shared/interfaces/user.interface';
+import { User } from '@shared/interfaces/user.interface';
 import { MockBackendService } from './mock-backend.service';
 
 @Injectable({

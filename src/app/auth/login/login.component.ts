@@ -10,8 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltip } from '@angular/material/tooltip';
-import { AuthService } from 'shared/services/auth.service';
-import { Router } from '@angular/router';
+import { AuthService } from '@shared/services/auth.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +23,7 @@ import { Router } from '@angular/router';
     MatInputModule,
     MatTooltip,
     ReactiveFormsModule,
+    RouterModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -30,6 +31,7 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   formBuilder = inject(FormBuilder);
   authService = inject(AuthService);
+  authState = this.authService.authState;
   router = inject(Router);
 
   loginForm = this.formBuilder.group({

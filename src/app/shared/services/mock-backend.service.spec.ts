@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { MockBackendService } from './mock-backend.service';
-import { User } from 'shared/interfaces/user.interface';
+import { User } from '@shared/interfaces/user.interface';
 import * as CryptoJS from 'crypto-js';
 import { firstValueFrom } from 'rxjs';
 

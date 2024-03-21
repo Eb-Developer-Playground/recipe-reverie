@@ -1,8 +1,7 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -25,13 +24,14 @@
       "dom"
     ],
     "paths": {
-      "assets/*": ["assets/*"],
-      "auth/*": ["app/auth/*"],
-      "home/*": ["app/home/*"],
-      "profile/*": ["app/accounts/profile/*"],
-      "shared/*": ["app/shared/*"],
-      "utilities/*": ["app/shared/utilities/*"]
-    }
+      "@assets/*": ["src/assets/*"],
+      "@auth/*": ["src/app/auth/*"],
+      "@home/*": ["src/app/home/*"],
+      "@profile/*": ["src/app/accounts/profile/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@utilities/*": ["src/app/shared/utilities/*"]
+    },
+    "types": ["@types/jest"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

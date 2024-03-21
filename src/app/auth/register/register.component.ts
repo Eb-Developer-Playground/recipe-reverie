@@ -11,9 +11,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltip } from '@angular/material/tooltip';
-import { AuthService } from 'shared/services/auth.service';
-import { PasswordMatchValidator } from 'shared/utilities/password-match.validator';
-import { User } from 'shared/interfaces/user.interface';
+import { AuthService } from '@shared/services/auth.service';
+import { PasswordMatchValidator } from '@shared/utilities/password-match.validator';
+import { User } from '@shared/interfaces/user.interface';
 import { Router } from '@angular/router';
 
 @Component({

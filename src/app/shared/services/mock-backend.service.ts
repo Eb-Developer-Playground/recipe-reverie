@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import CryptoJS from 'crypto-js';
-import { User } from 'shared/interfaces/user.interface';
+import { User } from '@shared/interfaces/user.interface';
 import { StorageService } from './storage.service';
 import { BehaviorSubject } from 'rxjs';
 
@@ -17,6 +17,7 @@ export class MockBackendService {
     email: '',
     token: '',
     valid: false,
+    loading: false,
   });
 
   auth() {
@@ -52,7 +53,13 @@ export class MockBackendService {
   signIn(email: string, password: string) {
     let authToken: string | null = null;
     let finalAuth: string;
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<boolean>(async (resolve, reject) => {
+      this.authSubject.next({
+        email: '',
+        token: '',
+        valid: false,
+        loading: true,
+      });
       const expectedResult = email + password;
 
       // Get the stored token, and reject if it isn't found
@@ -73,25 +80,33 @@ export class MockBackendService {
       // If no failures, set the session auth & email, update the auth observable stream, and resolve as true
       this.setAuth(finalAuth);
       this.setSessionEmail(email);
-      this.authSubject.next({
+      await this.artificialLoadingDelayAuthNext({
         email: email,
         token: finalAuth,
         valid: true,
+        loading: false,
       });
       resolve(true);
     });
   }
 
   signOut() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         this.authSubject.next({
           email: '',
           token: '',
           valid: false,
+          loading: true,
         });
         this.removeAuth();
         this.removeSessionEmail();
+        await this.artificialLoadingDelayAuthNext({
+          email: '',
+          token: '',
+          valid: false,
+          loading: false,
+        });
         resolve(true);
       } catch (error) {
         reject(error);
@@ -136,10 +151,20 @@ export class MockBackendService {
   private removeSessionEmail() {
     this.storageService.delete('sessionEmail');
   }
+
+  private artificialLoadingDelayAuthNext(auth: Auth) {
+    const delay = Math.round(Math.random() * 1000 * (Math.random() * 5));
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(this.authSubject.next(auth));
+      }, delay);
+    });
+  }
 }
 
 export interface Auth {
   email: string;
   token: string;
   valid: boolean;
+  loading: boolean;
 }
