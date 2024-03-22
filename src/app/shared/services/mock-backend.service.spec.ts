@@ -14,6 +14,10 @@ describe('MockBackendService', () => {
     localStorage.clear();
   });
 
+  afterEach(() => {
+    localStorage.clear();
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
@@ -51,7 +55,6 @@ describe('MockBackendService', () => {
     });
 
     it('should not overwrite existing details', async () => {
-      let errorMessage: string | undefined = undefined;
       const testAuth = 'Test Auth';
       const testUser: User = {
         name: 'Name',
@@ -63,14 +66,10 @@ describe('MockBackendService', () => {
 
       localStorage.setItem(`${testUser.email}: auth`, testAuth);
 
-      try {
+      const testFn = async () =>
         await service.createUser(testUser.email, testPassword, testUser);
-      } catch (error) {
-        errorMessage = error as string;
-      }
 
-      expect(errorMessage).toBeDefined();
-      expect(errorMessage).toEqual('User already exists');
+      return expect(testFn).rejects.toThrow(/User already exists/);
     });
   });
 
@@ -122,20 +121,13 @@ describe('MockBackendService', () => {
     });
 
     it('should fail when the user does not exist', async () => {
-      let thrownError: any;
-
-      try {
+      const testFn = async () =>
         await service.signIn('test@email.com', 'SecurePassword1.2.3');
-      } catch (error) {
-        thrownError = error as string;
-      }
 
-      expect(thrownError).toBeDefined();
-      expect(thrownError).toContain('User does not exist');
+      return expect(testFn).rejects.toThrow(/User does not exist/);
     });
 
     it('should fail when the password is incorrect', async () => {
-      let thrownError: any;
       const testUser: User = {
         name: 'Name',
         email: 'test@email.com',
@@ -150,14 +142,10 @@ describe('MockBackendService', () => {
 
       localStorage.setItem(`${testUser.email}: auth`, token);
 
-      try {
+      const testFn = async () =>
         await service.signIn(testUser.email, testPassword + '1');
-      } catch (error) {
-        thrownError = error as string;
-      }
 
-      expect(thrownError).toBeDefined();
-      expect(thrownError).toContain('Password is incorrect');
+      return expect(testFn).rejects.toThrow(/Password is incorrect/);
     });
 
     it('should set the auth token upon valid sign in', async () => {
@@ -246,6 +234,114 @@ describe('MockBackendService', () => {
       expect(newID).toEqual(expectedNewID);
       expect(newDetails.email).toEqual(newEmail);
       expect(oldDetails).toBeNull();
+    });
+    it('should delete the old details when email is changed', async () => {
+      let testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+      const testPassword = 'SecurePassword1.2.3';
+      const newEmail = 'email@test.com';
+      const token = CryptoJS.AES.encrypt(
+        testUser.email + testPassword,
+        testPassword
+      ).toString();
+      const id = CryptoJS.HmacSHA256(testUser.email, testUser.email).toString();
+      testUser = { ...testUser, id: id };
+
+      localStorage.setItem(`${testUser.email}: auth`, token);
+      localStorage.setItem(
+        `${testUser.email}: details`,
+        JSON.stringify(testUser)
+      );
+
+      await service.changeEmail(testUser.email, newEmail, testPassword);
+
+      const oldDetails = localStorage.getItem(`${testUser.email}: details`);
+
+      expect(oldDetails).toBeNull();
+    });
+    it('should update and return the user ID on email change', async () => {
+      let testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+      const testPassword = 'SecurePassword1.2.3';
+      const newEmail = 'email@test.com';
+      const token = CryptoJS.AES.encrypt(
+        testUser.email + testPassword,
+        testPassword
+      ).toString();
+      const id = CryptoJS.HmacSHA256(testUser.email, testUser.email).toString();
+      const expectedNewID = CryptoJS.HmacSHA256(newEmail, newEmail).toString();
+      testUser = { ...testUser, id: id };
+
+      localStorage.setItem(`${testUser.email}: auth`, token);
+      localStorage.setItem(
+        `${testUser.email}: details`,
+        JSON.stringify(testUser)
+      );
+
+      const newID = await service.changeEmail(
+        testUser.email,
+        newEmail,
+        testPassword
+      );
+
+      expect(newID).toEqual(expectedNewID);
+    });
+    it('should error when the provided password is incorrect', async () => {
+      const testEmail = 'test@email.com';
+      const correctPassword = 'SecurePassword1.2.3';
+      const incorrectPassword = 'SecurePassword1.2';
+      let errorMessage: string = '';
+
+      const token = CryptoJS.AES.encrypt(
+        testEmail + correctPassword,
+        correctPassword
+      ).toString();
+
+      localStorage.setItem(`${testEmail}: auth`, token);
+
+      const testFn = async () =>
+        await service.changeEmail(
+          testEmail,
+          testEmail + '+',
+          incorrectPassword
+        );
+
+      return expect(testFn).rejects.toThrow(/Password is incorrect/);
+    });
+    it('should error when the new email is already in use', async () => {
+      const testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+      const correctPassword = 'SecurePassword1.2.3';
+      const newEmail = 'email@email.com';
+
+      const token = CryptoJS.AES.encrypt(
+        testUser.email + correctPassword,
+        correctPassword
+      ).toString();
+
+      localStorage.setItem(`${testUser.email}: auth`, token);
+      localStorage.setItem(
+        `${testUser.email}: details`,
+        JSON.stringify(testUser)
+      );
+      localStorage.setItem(`${newEmail}: auth`, token);
+
+      const testFn = async () =>
+        await service.changeEmail(testUser.email, newEmail, correctPassword);
+
+      return expect(testFn).rejects.toThrow(/That email is already in use/);
     });
   });
 
