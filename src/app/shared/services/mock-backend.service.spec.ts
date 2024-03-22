@@ -73,6 +73,55 @@ describe('MockBackendService', () => {
     });
   });
 
+  describe('setUser()', () => {
+    it('should set user data', () => {
+      const testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+
+      service.setUser(testUser);
+
+      const retreivedDetails = localStorage.getItem(
+        `${testUser.email}: details`
+      );
+      let retreivedUser: User | null = null;
+      if (retreivedDetails) retreivedUser = JSON.parse(retreivedDetails);
+
+      expect(retreivedUser).not.toBeNull();
+      expect(retreivedUser?.email).toEqual(testUser.email);
+      expect(retreivedUser?.id).toEqual(testUser.id);
+    });
+    it('should overwrite existing data', () => {
+      const testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+      const testUserUpdated: User = { ...testUser, id: testUser.email + '.ke' };
+
+      localStorage.setItem(
+        `${testUser.email}: details`,
+        JSON.stringify(testUser)
+      );
+
+      service.setUser(testUserUpdated);
+
+      const retreivedDetails = localStorage.getItem(
+        `${testUser.email}: details`
+      );
+      let retreivedUser: User | null = null;
+      if (retreivedDetails) retreivedUser = JSON.parse(retreivedDetails);
+
+      expect(retreivedUser).not.toBeNull();
+      expect(retreivedUser?.email).toEqual(testUser.email);
+      expect(retreivedUser?.id).toEqual(testUserUpdated.id);
+    });
+  });
+
   describe('deleteUser()', () => {
     it('should delete a user', async () => {
       const testUser: User = {
@@ -96,6 +145,118 @@ describe('MockBackendService', () => {
 
       expect(authDetails).toBeNull();
       expect(userDetails).toBeNull();
+    });
+  });
+
+  describe('getUser()', () => {
+    it('should retrieve user details', () => {
+      const testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+
+      localStorage.setItem(
+        `${testUser.email}: details`,
+        JSON.stringify(testUser)
+      );
+
+      const retrievedUser = service.getUser(testUser.email);
+
+      expect(retrievedUser).not.toBeNull();
+      expect(retrievedUser?.id).toEqual(testUser.id);
+      expect(retrievedUser?.email).toEqual(testUser.email);
+    });
+
+    it('should return null when user data does not exist', () => {
+      const retrievedUser = service.getUser('nothere');
+
+      expect(retrievedUser).toBeNull();
+    });
+  });
+
+  describe('updateUser()', () => {
+    it('should update user details', () => {
+      const testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+      const testUserUpdated: User = {
+        ...testUser,
+        name: testUser.email + '.ke',
+      };
+
+      localStorage.setItem(
+        `${testUser.email}: details`,
+        JSON.stringify(testUser)
+      );
+
+      service.updateUser(testUser.email, testUserUpdated);
+
+      const retreivedDetails = localStorage.getItem(
+        `${testUser.email}: details`
+      );
+      let retreivedUser: User | null = null;
+      if (retreivedDetails) retreivedUser = JSON.parse(retreivedDetails);
+
+      expect(retreivedUser).not.toBeNull();
+      expect(retreivedUser?.name).toEqual(testUserUpdated.name);
+    });
+    it('should not overwrite email', () => {
+      const testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+      const testUserUpdated: User = {
+        ...testUser,
+        email: testUser.email + '.ke',
+      };
+
+      localStorage.setItem(
+        `${testUser.email}: details`,
+        JSON.stringify(testUser)
+      );
+
+      service.updateUser(testUser.email, testUserUpdated);
+
+      const retreivedDetails = localStorage.getItem(
+        `${testUser.email}: details`
+      );
+      let retreivedUser: User | null = null;
+      if (retreivedDetails) retreivedUser = JSON.parse(retreivedDetails);
+
+      expect(retreivedUser).not.toBeNull();
+      expect(retreivedUser?.email).toEqual(testUser.email);
+    });
+    it('should not overwrite id', () => {
+      const testUser: User = {
+        name: 'Name',
+        email: 'test@email.com',
+        id: 'testID',
+        phoneNumber: '0720000000',
+      };
+      const testUserUpdated: User = { ...testUser, id: testUser.id + '.ke' };
+
+      localStorage.setItem(
+        `${testUser.email}: details`,
+        JSON.stringify(testUser)
+      );
+
+      service.updateUser(testUser.email, testUserUpdated);
+
+      const retreivedDetails = localStorage.getItem(
+        `${testUser.email}: details`
+      );
+      let retreivedUser: User | null = null;
+      if (retreivedDetails) retreivedUser = JSON.parse(retreivedDetails);
+
+      expect(retreivedUser).not.toBeNull();
+      expect(retreivedUser?.id).toEqual(testUser.id);
     });
   });
 

@@ -48,6 +48,11 @@ export class MockBackendService {
     });
   }
 
+  // Will overwrite existing data
+  setUser(user: User) {
+    return this.updateUserDetails(user.email, user);
+  }
+
   deleteUser(email: string) {
     return new Promise<boolean>((resolve, reject) => {
       try {
@@ -60,6 +65,24 @@ export class MockBackendService {
 
       resolve(true);
     });
+  }
+
+  getUser(email: string) {
+    return this.getUserDetails(email);
+  }
+
+  // Change any user details except email and id, which should be changed by the changeEmail function only, to maintain data integrity
+  updateUser(email: string, updates: updateDetails) {
+    let user = this.getUserDetailsNoNull(email);
+
+    // Explicitly prevent id and email from being overwritten
+    const newUser = {
+      ...user,
+      ...updates,
+      id: user.id,
+      email: user.email,
+    };
+    this.updateUserDetails(email, newUser);
   }
 
   signIn(email: string, password: string) {
@@ -314,6 +337,13 @@ export class MockBackendService {
     if (user) return user;
     else return null;
   }
+  private getUserDetailsNoNull(email: string) {
+    const user: User | null = this.storageService.readFromStorage(
+      `${email}: details`
+    );
+    if (user) return user;
+    else throw new Error(this.USER_DOES_NOT_EXIST);
+  }
   private updateUserDetails(email: string, user: User) {
     this.storageService.writeToStorage(`${email}: details`, user);
   }
@@ -331,9 +361,18 @@ export class MockBackendService {
   }
 }
 
+// Interfaces
 export interface Auth {
   email: string;
   token: string;
   valid: boolean;
   loading: boolean;
+}
+
+export interface updateDetails {
+  name?: string;
+  phoneNumber?: string;
+  aboutMe?: string;
+  profilePicture?: string;
+  profileCoverImage?: string;
 }
