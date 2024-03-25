@@ -1,7 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { User } from '@shared/interfaces/user.interface';
 import { StorageService } from './storage.service';
 import { MockBackendService, updateDetails } from './mock-backend.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,13 @@ export class UserService {
   constructor() {}
   storage = inject(StorageService);
   backend = inject(MockBackendService);
+  auth = inject(AuthService);
+
+  userDetails = computed(() => {
+    const email = this.auth.authState()?.email;
+    if (email) return this.backend.getUser(email);
+    else return null;
+  });
 
   setUserDetails(user: User) {
     return new Promise((resolve) => resolve(this.backend.setUser(user)));
@@ -24,11 +32,13 @@ export class UserService {
     });
   }
 
-  updateUserDetails(user: User, updates: updateDetails) {
-    let updatedUser: User = { ...user, ...updates };
-    return new Promise((resolve) =>
-      resolve(this.backend.updateUser(user.email, updates))
-    );
+  updateUserDetails(updates: updateDetails) {
+    return new Promise((resolve, reject) => {
+      let user = this.userDetails();
+      if (user) {
+        resolve(this.backend.updateUser(user.email, updates));
+      } else reject(new Error('User details not available'));
+    });
   }
 
   changeEmail(oldEmail: string, newEmail: string, password: string) {

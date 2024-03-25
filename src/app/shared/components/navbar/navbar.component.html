@@ -5,16 +5,29 @@
     >
 
     <div class="navItems">
-      @if (!auth()?.valid) {
+      @if (!userDetails()) {
       <button mat-button [routerLink]="['/auth/login']">Login</button>
       }
       <div class="profile-image-container">
+        @if(userDetails()) {
         <img
           class="profile-image"
-          [src]="auth()?.valid ? profileImage2 : profileImage"
-          [alt]="auth()?.valid ? auth()?.email + ' Avatar' : 'Avatar'"
-          [routerLink]="['/profile']"
+          [src]="
+            userDetails()?.profilePicture
+              ? userDetails()?.profilePicture
+              : profileImage2 + '&seed=' + userDetails()?.email
+          "
+          [alt]="userDetails()?.email + ' Avatar'"
+          [routerLink]="['/accounts/profile']"
         />
+        } @else {
+        <img
+          class="profile-image"
+          [src]="profileImage"
+          [alt]="'Default Avatar'"
+          [routerLink]="['/accounts/profile']"
+        />
+        }
       </div>
     </div>
   </mat-toolbar>

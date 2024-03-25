@@ -25,6 +25,7 @@
     ],
     "paths": {
       "@assets/*": ["src/assets/*"],
+      "@accounts/*": ["src/app/accounts/*"],
       "@auth/*": ["src/app/auth/*"],
       "@home/*": ["src/app/home/*"],
       "@profile/*": ["src/app/accounts/profile/*"],

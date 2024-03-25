@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '@shared/services/auth.service';
+import { UserService } from '@shared/services/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -9,6 +10,6 @@ import { AuthService } from '@shared/services/auth.service';
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent {
-  authService = inject(AuthService);
-  authState = this.authService.authState;
+  userService = inject(UserService);
+  user = this.userService.userDetails;
 }

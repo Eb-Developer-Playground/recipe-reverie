@@ -20,7 +20,6 @@ export function PasswordMatchValidator(
     }
 
     if (passwordControl.value !== confirmPasswordControl.value) {
-      passwordControl.setErrors({ passwordMismatch: true });
       confirmPasswordControl.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     } else {

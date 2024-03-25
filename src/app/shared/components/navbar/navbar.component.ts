@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '@shared/services/auth.service';
+import { UserService } from '@shared/services/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -21,10 +22,8 @@ import { AuthService } from '@shared/services/auth.service';
 })
 export class NavbarComponent {
   authService = inject(AuthService);
-  testAuth = computed(() => {
-    console.log(this.auth());
-    this.auth();
-  });
+  userService = inject(UserService);
+  userDetails = this.userService.userDetails;
   auth = this.authService.authState;
 
   profileImage = 'https://api.dicebear.com/8.x/thumbs/svg?radius=50';

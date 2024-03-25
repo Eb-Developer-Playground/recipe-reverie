@@ -25,7 +25,11 @@
               <div class="main__unique8">
                 <img
                   alt="..."
-                  src="https://demos.creative-tim.com/notus-js/assets/img/team-2-800x800.jpg"
+                  [src]="
+                    'https://api.dicebear.com/8.x/personas/svg?radius=50&backgroundType=solid' +
+                    '&seed=' +
+                    user()?.email
+                  "
                 />
               </div>
             </div>
@@ -52,7 +56,7 @@
             </div>
           </div>
           <div class="main__unique21">
-            <h3>Jenna Stones</h3>
+            <h3>{{ user()?.name }}</h3>
             <div class="main__unique22">
               <i class="main__unique24"></i>
               Los Angeles, California

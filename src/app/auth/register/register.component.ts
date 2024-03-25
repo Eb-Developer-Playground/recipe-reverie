@@ -82,7 +82,8 @@ export class RegisterComponent {
       try {
         await this.authService.signup(user, password);
       } catch (error) {
-        this.snackbar.openSnackBarNoAction(error as string, 4000);
+        let thrownError = error as Error;
+        this.snackbar.openSnackBarNoAction(thrownError.message, 4000);
       }
       setTimeout(() => {
         this.router.navigate(['/auth/login']);
