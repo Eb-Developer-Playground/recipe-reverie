@@ -7,6 +7,10 @@
     <div class="navItems">
       @if (!userDetails()) {
       <button mat-button [routerLink]="['/auth/login']">Login</button>
+      } @else {
+      <button mat-button [routerLink]="['/accounts/setup-profile']">
+        setup
+      </button>
       }
       <div class="profile-image-container">
         @if(userDetails()) {

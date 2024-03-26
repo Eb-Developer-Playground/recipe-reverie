@@ -1,0 +1,53 @@
+@switch (variant()) { @case ("raised") {
+<button
+  mat-raised-button
+  [color]="color() ? color() : ''"
+  [style]="'width:' + (width() ? width() : '100%')"
+>
+  <span>
+    {{ contentText() ? contentText() : "Loading" }}
+    <mat-icon [color]="loadingColor()">
+      <mat-spinner [color]="loadingColor()"> </mat-spinner>
+    </mat-icon>
+  </span>
+</button>
+} @case ("stroked") {
+<button
+  mat-stroked-button
+  [color]="color() ? color() : ''"
+  [style]="'width:' + (width() ? width() : '100%')"
+>
+  <span>
+    {{ contentText() ? contentText() : "Loading" }}
+    <mat-icon [color]="loadingColor()">
+      <mat-spinner [color]="loadingColor()"> </mat-spinner>
+    </mat-icon>
+  </span>
+</button>
+} @case ("flat") {
+<button
+  mat-flat-button
+  [color]="color() ? color() : ''"
+  [style]="'width:' + (width() ? width() : '100%')"
+>
+  <span>
+    {{ contentText() ? contentText() : "Loading" }}
+    <mat-icon [color]="loadingColor()">
+      <mat-spinner [color]="loadingColor()"> </mat-spinner>
+    </mat-icon>
+  </span>
+</button>
+} @default {
+<button
+  mat-button
+  [color]="color() ? color() : ''"
+  [style]="'width:' + (width() ? width() : '100%')"
+>
+  <span>
+    {{ contentText() ? contentText() : "Loading" }}
+    <mat-icon [color]="loadingColor()">
+      <mat-spinner [color]="loadingColor()"> </mat-spinner>
+    </mat-icon>
+  </span>
+</button>
+} }
