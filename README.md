@@ -12,10 +12,10 @@ Recipe Reverie is a dynamic platform for sharing and discovering delightful reci
 
 1. **User Registration and Authentication:**
 
-   - [ ] Implement user registration feature with necessary details (name, email, password).
+   - [x] Implement user registration feature with necessary details (name, email, password).
    - [x] Securely authenticate users using registered email and password.
    - [x] Implement error handling for incorrect login credentials and display relevant messages.
-   - [ ] Allow users to view and update their account information, including contact details.
+   - [x] Allow users to view and update their account information, including contact details.
 
 2. **Recipe Management:**
 

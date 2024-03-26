@@ -20,7 +20,7 @@ main {
     }
 
     .details-form {
-      width: full;
+      width: 100%;
       margin: $--s-unit-4 auto;
       padding: $--s-unit-8;
 
@@ -31,6 +31,52 @@ main {
 
       border-radius: $--s-unit-4;
       box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+      mat-stepper {
+        width: 100%;
+
+        mat-step {
+          width: 100%;
+        }
+
+        mat-card {
+          width: fit-content;
+          max-width: 95%;
+          min-width: 85%;
+
+          @media (min-width: $--md) {
+            max-width: 70%;
+            min-width: 50%;
+          }
+          margin: auto;
+        }
+        mat-card.profile {
+          width: fit-content;
+          max-width: fit-content;
+          min-width: fit-content;
+          margin: auto;
+
+          .profile-picture {
+            border-radius: $--s-unit-96;
+          }
+
+          .warning-image {
+            min-height: $--s-unit-16;
+            max-height: $--s-unit-32;
+            height: $--s-unit-24;
+          }
+        }
+
+        .profile-cover {
+          min-height: 50%;
+          padding-top: $--s-unit-12;
+          padding-bottom: $--s-unit-12;
+          max-height: 100%;
+          background-position: center;
+          background-size: cover;
+          background-repeat: no-repeat;
+        }
+      }
 
       h1 {
         font-weight: $font-bold;
@@ -44,51 +90,26 @@ main {
         padding-bottom: $--s-unit-4;
         margin-top: $--s-unit-12;
 
-        .inputs {
-          position: relative;
-          margin-bottom: $--s-unit-4;
+        position: relative;
+        margin-bottom: $--s-unit-4;
 
-          mat-form-field {
-            width: 100%;
-          }
+        mat-form-field {
+          width: 100%;
+        }
 
-          input {
-            display: block;
-            width: 100%;
-            min-height: auto;
-            @include text-size("base");
-          }
+        input {
+          display: block;
+          width: 100%;
+          min-height: auto;
+          @include text-size("base");
+        }
 
-          h1 {
-            margin-top: $--s-unit-4;
-          }
+        h1 {
+          margin-top: $--s-unit-4;
+        }
 
-          .number {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
-            width: 100%;
-
-            gap: $--s-unit-0;
-
-            mat-form-field {
-              flex-grow: 2;
-            }
-
-            @media (min-width: $--md) {
-              flex-direction: row;
-              flex-wrap: nowrap;
-              gap: $--s-unit-4;
-
-              .double-size {
-                flex-grow: 6;
-              }
-            }
-          }
-
-          button {
-            width: 100%;
-          }
+        button {
+          width: 100%;
         }
       }
     }

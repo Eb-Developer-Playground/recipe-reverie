@@ -3,13 +3,20 @@
     <div class="details-form">
       <h1>Finish setting up your profile</h1>
 
-      <form [formGroup]="detailsForm" (submit)="submit()">
-        <div class="inputs">
-          <div class="number">
+      <mat-stepper orientation="vertical" [linear]="linearSteps">
+        <mat-step
+          [stepControl]="phoneNumberForm"
+          [errorMessage]="getPhoneNumberErrors()"
+        >
+          <ng-template matStepLabel>Fill out your phone number</ng-template>
+          <form [formGroup]="phoneNumberForm" (submit)="submitPhone()">
             <mat-form-field>
               <mat-label>Country</mat-label>
 
-              <mat-select [formControl]="countryCodeControl">
+              <mat-select
+                [formControl]="countryCodeControl"
+                [disabled]="phoneSaved"
+              >
                 <mat-option>Country</mat-option>
                 @for (country of countries; track country) {
                 <mat-option [value]="country.code">
@@ -27,6 +34,7 @@
                 matInput
                 placeholder="0720 000 000"
                 formControlName="phoneNumber"
+                [disabled]="phoneSaved"
               />
               <mat-hint>Enter your phone number here</mat-hint>
 
@@ -34,79 +42,321 @@
               <mat-error>{{ getPhoneNumberErrors() }}</mat-error>
               }
             </mat-form-field>
-          </div>
-          <mat-form-field>
-            <mat-label>About Me</mat-label>
 
-            <textarea
-              matInput
-              placeholder="A little bit about myself"
-              formControlName="aboutMe"
-            ></textarea>
-            <mat-hint align="start">
-              Tell us something about who you are
-            </mat-hint>
-            <mat-hint align="end">
-              {{ aboutMeControl.value.length }} / 300
-            </mat-hint>
-
-            @if(aboutMeControl.invalid) {
-            <mat-error>{{ getAboutMeErrors() }}</mat-error>
+            @if (!phoneSaved) { @if (phoneValid) { @if (!loading) {
+            <button
+              mat-stroked-button
+              color="primary"
+              type="submit"
+              aria-label="Save Phone Number"
+            >
+              Save
+            </button>
+            } @else {
+            <app-loading-button
+              [color]="'accent'"
+              [variant]="'stroked'"
+              [contentText]="'Saving...'"
+              aria-label="Saving"
+            ></app-loading-button>
+            } } @else {
+            <button mat-button disabled aria-disabled="true" aria-label="Save">
+              Save
+            </button>
+            } } @else {
+            <button
+              mat-stroked-button
+              color="primary"
+              type="submit"
+              aria-label="Phone Number has been saved"
+              disabled
+            >
+              Saved!
+            </button>
             }
-          </mat-form-field>
-          <mat-divider> </mat-divider>
-          <h1>Customization</h1>
-          <mat-form-field>
-            <mat-label>Profile Picture</mat-label>
-            <input
-              matInput
-              type="url"
-              placeholder="https://imageurl.place"
-              formControlName="profilePicture"
-            />
-            <mat-hint>
-              Enter the link to the image you want to use as your profile
-              picture (Optional)
-            </mat-hint>
-          </mat-form-field>
+          </form>
+          <div>
+            <button
+              mat-button
+              matStepperNext
+              type="button"
+              [disabled]="!phoneValid || !phoneSaved"
+            >
+              Next
+            </button>
+          </div>
+        </mat-step>
 
-          <mat-form-field>
-            <mat-label>Cover Photo</mat-label>
-            <input
-              matInput
-              type="url"
-              placeholder="https://imageurl.place"
-              formControlName="profilePicture"
-            />
-            <mat-hint>
-              Enter the link to the image you want to use as your cover photo
-              (Optional)
-            </mat-hint>
-          </mat-form-field>
-          @if(formValid) {
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            disabledInteractive
-          >
-            Submit
-          </button>
+        <mat-step
+          [stepControl]="aboutMeForm"
+          [optional]="optionalStep"
+          [errorMessage]="getAboutMeErrors()"
+        >
+          <ng-template matStepLabel>Tell us a bit about yourself</ng-template>
+          <form [formGroup]="aboutMeForm" (submit)="submitAboutMe()">
+            <mat-form-field>
+              <mat-label>About Me</mat-label>
 
-          } @else {
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            disabled
-            disabledInteractive
-            matTooltip="Check your inputs and try again"
+              <textarea
+                matInput
+                placeholder="A little bit about myself"
+                formControlName="aboutMe"
+              >
+              </textarea>
+              <mat-hint align="start">
+                Tell us something about who you are
+              </mat-hint>
+              <mat-hint align="end">
+                {{ aboutMeControl.value.length }} / 300
+              </mat-hint>
+
+              @if(aboutMeControl.invalid) {
+              <mat-error>{{ getAboutMeErrors() }}</mat-error>
+              }
+            </mat-form-field>
+            @if (!aboutMeSaved) { @if (aboutMeValid) { @if (!loading) {
+            <button
+              mat-stroked-button
+              color="primary"
+              type="submit"
+              aria-label="Save About Me"
+            >
+              Save
+            </button>
+            } @else {
+            <app-loading-button
+              [color]="'accent'"
+              [variant]="'stroked'"
+              [contentText]="'Saving...'"
+              aria-label="Saving"
+            ></app-loading-button>
+            } } @else {
+            <button mat-button disabled aria-disabled="true" aria-label="Save">
+              Save
+            </button>
+            } } @else {
+            <button
+              mat-stroked-button
+              color="primary"
+              type="submit"
+              aria-label="About Me has been saved"
+              disabled
+            >
+              Saved!
+            </button>
+            }
+          </form>
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>
+                {{ user()?.name ? user()?.name : "User Name" }}
+              </mat-card-title>
+              <mat-card-subtitle>
+                {{ user()?.email ? user()?.email : "email@email.com" }}
+              </mat-card-subtitle>
+              <img
+                mat-card-avatar
+                [src]="
+                  user()?.profilePicture
+                    ? user()?.profilePicture
+                    : defaultAvatar
+                "
+              />
+            </mat-card-header>
+            <mat-card-content>
+              <p>{{ aboutMeControl.value }}</p>
+            </mat-card-content>
+          </mat-card>
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button">Next</button>
+        </mat-step>
+
+        <mat-step
+          [optional]="optionalStep"
+          [errorMessage]="getProfilePictureErrors()"
+          [stepControl]="profilePictureForm"
+        >
+          <ng-template matStepLabel>Pick a profile picture</ng-template>
+          <form
+            [formGroup]="profilePictureForm"
+            (submit)="submitProfilePicture()"
           >
-            Submit
-          </button>
-          }
-        </div>
-      </form>
+            <mat-form-field>
+              <mat-label>Profile Picture</mat-label>
+              <input
+                matInput
+                type="url"
+                placeholder="https://imageurl.place"
+                formControlName="profilePicture"
+              />
+              <mat-hint>
+                Enter the link to the image you want to use as your profile
+                picture
+              </mat-hint>
+            </mat-form-field>
+
+            @if (!profilePictureSaved) { @if (profilePictureValid) { @if
+            (!loading) {
+            <button
+              mat-stroked-button
+              color="primary"
+              type="submit"
+              aria-label="Save Profile Picture"
+            >
+              Save
+            </button>
+            } @else {
+            <app-loading-button
+              [color]="'accent'"
+              [variant]="'stroked'"
+              [contentText]="'Saving...'"
+              aria-label="Saving"
+            ></app-loading-button>
+            } } @else {
+            <button mat-button disabled aria-disabled="true" aria-label="Save">
+              Save
+            </button>
+            } } @else {
+            <button
+              mat-stroked-button
+              color="primary"
+              type="submit"
+              aria-label="profile Picture has been saved"
+              disabled
+            >
+              Saved!
+            </button>
+            }
+          </form>
+
+          <mat-card class="profile">
+            <mat-card-header>
+              <mat-card-title>
+                {{ user()?.name ? user()?.name : "User Name" }}
+              </mat-card-title>
+              <mat-card-subtitle>
+                {{ user()?.email ? user()?.email : "email@email.com" }}
+              </mat-card-subtitle>
+              <img
+                mat-card-lg-image
+                [src]="profilePictureControl.value"
+                (error)="imageLoadFail('profilePicture')"
+                #img
+                (load)="imageLoadSucceed('profilePicture')"
+                class="profile-picture"
+                alt="Profile Picture"
+              />
+            </mat-card-header>
+            @if (imageLoadError) {
+            <mat-card-content>
+              <img
+                src="../../../assets/warning.svg"
+                alt="Warning Image"
+                aria-label="Warning Image"
+                class="warning-image"
+              />
+              <p>
+                That image appears to be invalid. Check the link and try again
+              </p>
+            </mat-card-content>
+            }
+          </mat-card>
+
+          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperNext type="button">Next</button>
+        </mat-step>
+
+        <mat-step [optional]="optionalStep">
+          <ng-template matStepLabel>Pick a background image</ng-template>
+          <div
+            class="profile-cover"
+            [style]="
+              'background-image: url(' + profileCoverImageControl.value + ');'
+            "
+          >
+            <form
+              [formGroup]="profileCoverImageForm"
+              (submit)="submitProfileCover()"
+            >
+              <mat-form-field>
+                <mat-label>Cover Photo</mat-label>
+                <input
+                  matInput
+                  type="url"
+                  placeholder="https://imageurl.place"
+                  formControlName="profileCoverImage"
+                />
+                <mat-hint>
+                  Enter the link to the image you want to use as your cover
+                  photo
+                </mat-hint>
+              </mat-form-field>
+
+              @if(!profileCoverImageSaved) { @if(profileCoverValid) {
+              @if(!loading) {
+              <button
+                mat-flat-button
+                color="primary"
+                type="submit"
+                aria-label="Save Profile Cover Image"
+              >
+                Save
+              </button>
+              } @else {
+              <app-loading-button
+                [color]="'accent'"
+                [variant]="'flat'"
+                [contentText]="'Saving...'"
+                aria-label="Saving"
+              ></app-loading-button>
+              } } @else {
+              <button
+                mat-flat-button
+                disabled
+                aria-disabled="true"
+                aria-label="Save"
+              >
+                Save
+              </button>
+              } } @else {
+              <button
+                mat-flat-button
+                color="primary"
+                type="submit"
+                aria-label="Cover image has been saved"
+                disabled
+              >
+                Saved!
+              </button>
+              }
+            </form>
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>
+                  {{ user()?.name ? user()?.name : "User Name" }}
+                </mat-card-title>
+                <mat-card-subtitle>
+                  {{ user()?.email ? user()?.email : "email@email.com" }}
+                </mat-card-subtitle>
+                <img
+                  mat-card-avatar
+                  [src]="
+                    user()?.profilePicture
+                      ? user()?.profilePicture
+                      : defaultAvatar
+                  "
+                />
+              </mat-card-header>
+              <mat-card-content>
+                <p>
+                  {{ user()?.aboutMe ? user()?.aboutMe : defaultAboutMe }}
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <button mat-button matStepperNext type="button">Finish</button>
+        </mat-step>
+      </mat-stepper>
     </div>
   </div>
 </main>

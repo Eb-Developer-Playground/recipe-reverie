@@ -23,7 +23,7 @@ export class UserService {
     return new Promise((resolve) => resolve(this.backend.setUser(user)));
   }
 
-  getUserDetails(email: string) {
+  private getUserDetails(email: string) {
     return new Promise<User | null>((resolve) => {
       const data = this.backend.getUser(email);
 

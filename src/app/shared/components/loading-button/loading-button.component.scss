@@ -1,0 +1,24 @@
+@import "../../../shared/utilities/variables";
+
+button {
+  width: 100%;
+  span {
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    gap: $--s-unit-2;
+    align-items: center;
+    justify-content: center;
+    padding: $--s-unit-4;
+
+    mat-spinner {
+      max-height: 100%;
+      max-width: 100%;
+
+      svg {
+        max-height: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+}

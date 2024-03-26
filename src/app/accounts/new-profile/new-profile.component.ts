@@ -1,5 +1,5 @@
+// Angular Imports
 import { Component, inject } from '@angular/core';
-
 import {
   FormsModule,
   FormBuilder,
@@ -7,19 +7,27 @@ import {
   ReactiveFormsModule,
   FormControl,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+
+// Angular Material Imports
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTooltip } from '@angular/material/tooltip';
-
-import { Router } from '@angular/router';
+import { MatStepperModule } from '@angular/material/stepper';
 
 import { SnackbarService } from '@shared/services/snackbar.service';
-import { updateDetails } from '@shared/services/mock-backend.service';
 import { UserService } from '@shared/services/user.service';
+
+// Utility Imports
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
+import { MOBILE_REGEX_PATTERN } from '@shared/utilities/mobile.regex';
+import { updateDetails } from '@shared/services/mock-backend.service';
+
+// Component Imports
+import { LoadingButtonComponent } from '@shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'app-new-profile',
@@ -32,8 +40,12 @@ import { UserService } from '@shared/services/user.service';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatTooltip,
+    MatStepperModule,
     ReactiveFormsModule,
+    LoadingButtonComponent,
+  ],
+  providers: [
+    { provide: STEPPER_GLOBAL_OPTIONS, useValue: { showError: true } },
   ],
   templateUrl: './new-profile.component.html',
   styleUrl: './new-profile.component.scss',
@@ -44,8 +56,21 @@ export class NewProfileComponent {
   snackbar = inject(SnackbarService);
   userService = inject(UserService);
 
-  readonly MOBILE_PATTERN =
-    /(\+\d{1,3}\s?)?((\(\d{3,4}\)\s?)|(\d{3,4})(\s|-?))(\d{3}(\s|-?))(\d{3})?/;
+  user = this.userService.userDetails;
+
+  readonly defaultAvatar = 'https://api.dicebear.com/8.x/thumbs/svg?radius=50';
+  readonly defaultAboutMe =
+    "Welcome to the whimsical realm of my 'About Me.' Here, words mingle in delightful disarray, concocting a blend of essence and wit. Just a hint of humor, a sprinkle of introspection, and a dash of charm await.";
+
+  linearSteps = true;
+  loading = false;
+  optionalStep = true;
+
+  phoneSaved = false;
+  aboutMeSaved = false;
+  profilePictureSaved = false;
+  profileCoverImageSaved = false;
+  imageLoadError = false;
 
   readonly countries: { name: string; code: string }[] = [
     { name: 'Kenya', code: '254' },
@@ -57,72 +82,197 @@ export class NewProfileComponent {
     { name: 'United Kingdom', code: '44' },
   ];
 
-  detailsForm = this.formBuilder.group({
+  phoneNumberForm = this.formBuilder.group({
     countryCode: [
       '',
       [Validators.required, Validators.minLength(1), Validators.maxLength(3)],
     ],
     phoneNumber: [
       '',
-      [Validators.required, Validators.pattern(this.MOBILE_PATTERN)],
+      [Validators.required, Validators.pattern(MOBILE_REGEX_PATTERN)],
     ],
+  });
+
+  aboutMeForm = this.formBuilder.group({
     aboutMe: ['', [Validators.maxLength(300), Validators.minLength(50)]],
+  });
+
+  profilePictureForm = this.formBuilder.group({
     profilePicture: [''],
+  });
+
+  profileCoverImageForm = this.formBuilder.group({
     profileCoverImage: [''],
   });
 
-  async submit() {
-    if (this.detailsForm.invalid) return;
+  async submitPhone() {
+    if (this.phoneNumberForm.invalid) return;
 
-    const values = this.detailsForm.value;
+    const values = this.phoneNumberForm.value;
     const countryCode = values.countryCode;
     const phoneNumber = values.phoneNumber;
-    const aboutMe = values.aboutMe;
-    const profilePicture = values.profilePicture;
-    const profileCoverImage = values.profileCoverImage;
 
     if (phoneNumber && countryCode) {
       const updates: updateDetails = {
         phoneNumber: phoneNumber,
         countryCode: countryCode,
-        aboutMe: aboutMe ? aboutMe : '',
-        profilePicture: profilePicture ? profilePicture : '',
-        profileCoverImage: profileCoverImage ? profileCoverImage : '',
       };
 
       try {
+        this.loading = true;
+
         await this.userService.updateUserDetails(updates);
+
+        this.loading = false;
+        this.phoneSaved = true;
       } catch (error) {
         let thrownError = error as Error;
         this.snackbar.openSnackBarNoAction(thrownError.message, 4000);
+        this.loading = false;
       }
     }
   }
 
+  async submitAboutMe() {
+    if (this.aboutMeForm.invalid) return;
+
+    const values = this.aboutMeForm.value;
+    const aboutMe = values.aboutMe;
+
+    if (aboutMe) {
+      const updates: updateDetails = {
+        aboutMe: aboutMe,
+      };
+
+      try {
+        this.loading = true;
+        await this.userService.updateUserDetails(updates);
+        this.loading = false;
+        this.aboutMeSaved = true;
+      } catch (error) {
+        let thrownError = error as Error;
+        this.snackbar.openSnackBarNoAction(thrownError.message, 4000);
+        this.loading = false;
+      }
+    }
+  }
+
+  async submitProfilePicture() {
+    if (this.imageLoadError) return;
+
+    const values = this.profilePictureForm.value;
+    const profilePicture = values.profilePicture;
+
+    if (profilePicture) {
+      const updates: updateDetails = {
+        profilePicture: profilePicture,
+      };
+
+      try {
+        this.loading = true;
+        await this.userService.updateUserDetails(updates);
+        this.loading = false;
+        this.profilePictureSaved = true;
+      } catch (error) {
+        let thrownError = error as Error;
+        this.snackbar.openSnackBarNoAction(thrownError.message, 4000);
+        this.loading = false;
+      }
+    }
+  }
+
+  async submitProfileCover() {
+    if (this.imageLoadError) return;
+
+    const values = this.profileCoverImageForm.value;
+    const profileCoverImage = values.profileCoverImage;
+
+    if (profileCoverImage) {
+      const updates: updateDetails = {
+        profileCoverImage: profileCoverImage,
+      };
+
+      try {
+        this.loading = true;
+        await this.userService.updateUserDetails(updates);
+        this.loading = false;
+        this.profileCoverImageSaved = true;
+      } catch (error) {
+        let thrownError = error as Error;
+        this.snackbar.openSnackBarNoAction(thrownError.message, 4000);
+        this.loading = false;
+      }
+    }
+  }
+
+  // TODO: Fix This
+  imageLoadFail(choice: 'profilePicture' | 'ProfileCover') {
+    if (choice == 'profilePicture') {
+      this.profilePictureControl.setErrors({ pictureInvalid: true });
+      this.profilePictureControl.markAsTouched();
+      this.profilePictureControl.updateValueAndValidity();
+    } else {
+      this.profileCoverImageControl.setErrors({ pictureInvalid: true });
+      this.profileCoverImageControl.markAsTouched();
+      this.profileCoverImageControl.updateValueAndValidity();
+    }
+    this.imageLoadError = true;
+  }
+  imageLoadSucceed(choice: 'profilePicture' | 'ProfileCover') {
+    if (choice == 'profilePicture') {
+      if (
+        this.profilePictureControl.hasError('pictureInvalid') &&
+        this.profilePictureControl.errors
+      ) {
+        delete this.profilePictureControl.errors['pictureInvalid'];
+        this.profilePictureControl.markAsTouched();
+        this.profilePictureControl.updateValueAndValidity();
+      }
+    } else {
+      if (
+        this.profileCoverImageControl.hasError('pictureInvalid') &&
+        this.profileCoverImageControl.errors
+      ) {
+        delete this.profileCoverImageControl.errors['pictureInvalid'];
+        this.profileCoverImageControl.markAsTouched();
+        this.profileCoverImageControl.updateValueAndValidity();
+      }
+    }
+
+    this.imageLoadError = false;
+  }
+  // END TODO
+
   get countryCodeControl() {
-    return this.detailsForm.get('countryCode') as FormControl;
+    return this.phoneNumberForm.get('countryCode') as FormControl;
   }
   get phoneNumberControl() {
-    return this.detailsForm.get('phoneNumber') as FormControl;
+    return this.phoneNumberForm.get('phoneNumber') as FormControl;
   }
   get aboutMeControl() {
-    return this.detailsForm.get('aboutMe') as FormControl;
+    return this.aboutMeForm.get('aboutMe') as FormControl;
   }
   get aboutMeText() {
     return this.aboutMeControl.value as string;
   }
   get profilePictureControl() {
-    return this.detailsForm.get('profilePicture') as FormControl;
+    return this.profilePictureForm.get('profilePicture') as FormControl;
   }
   get profileCoverImageControl() {
-    return this.detailsForm.get('profileCoverImage') as FormControl;
+    return this.profileCoverImageForm.get('profileCoverImage') as FormControl;
   }
 
-  get formErrors() {
-    return this.detailsForm.errors;
+  get phoneValid() {
+    return this.phoneNumberForm.valid;
   }
-  get formValid() {
-    return this.detailsForm.valid;
+  get aboutMeValid() {
+    return this.aboutMeForm.valid;
+  }
+  get profilePictureValid() {
+    return this.profilePictureForm.valid;
+  }
+  get profileCoverValid() {
+    return this.profileCoverImageForm.valid;
   }
 
   getCountryCodeErrors() {
@@ -131,12 +281,12 @@ export class NewProfileComponent {
       this.countryCodeControl.hasError('maxlength')
     )
       return 'Invalid country code';
-    return null;
+    return '';
   }
   getPhoneNumberErrors() {
     if (this.phoneNumberControl.hasError('pattern'))
       return 'Invalid phone number';
-    return null;
+    return '';
   }
   getAboutMeErrors() {
     if (this.aboutMeControl.hasError('maxlength'))
@@ -145,6 +295,10 @@ export class NewProfileComponent {
       return 'The input description is too short. Aim for 50 characters';
 
     let text = this.aboutMeControl.value as string;
-    return null;
+    return '';
+  }
+  getProfilePictureErrors() {
+    if (this.imageLoadError) return 'The selected Image is invalid';
+    else return '';
   }
 }
