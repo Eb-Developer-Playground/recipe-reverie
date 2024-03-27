@@ -1,49 +1,55 @@
-.mat-toolbar {
-  color: white;
-
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+nav {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
   width: 100%;
-  justify-content: space-between;
-  align-items: center;
-
-  > * {
-    margin: 0, 1rem;
-  }
-  .title {
-    align-self: flex-start;
-    align-self: center;
-    justify-self: center;
-    cursor: pointer;
-  }
-
-  .navItems {
-    align-self: center;
-    justify-self: center;
-    align-items: center;
+  mat-toolbar {
+    color: white;
 
     display: flex;
     flex-direction: row;
-    gap: 1rem;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
 
-    .profile-image-container {
-      height: 2.5rem;
-      width: 2.5rem;
-      .profile-image {
+    > * {
+      margin: 0, 1rem;
+    }
+    .title {
+      align-self: flex-start;
+      align-self: center;
+      justify-self: center;
+      cursor: pointer;
+    }
+
+    .navItems {
+      align-self: center;
+      justify-self: center;
+      align-items: center;
+
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+
+      .profile-image-container {
         height: 2.5rem;
-        border-radius: 50%;
-      }
+        width: 2.5rem;
+        .profile-image {
+          height: 2.5rem;
+          border-radius: 50%;
+        }
 
-      img {
-        cursor: pointer;
+        img {
+          cursor: pointer;
 
-        transition-property: all;
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        transition-duration: 150ms;
+          transition-property: all;
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+          transition-duration: 150ms;
 
-        &:hover {
-          transform: scale(1.1);
+          &:hover {
+            transform: scale(1.1);
+          }
         }
       }
     }

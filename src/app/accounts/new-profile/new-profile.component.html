@@ -1,14 +1,38 @@
 <main>
   <div class="container form-container">
     <div class="details-form">
-      <h1>Finish setting up your profile</h1>
+      <mat-stepper
+        [linear]="linearSteps"
+        [orientation]="(windowObserver | async) || 'horizontal'"
+      >
+        <mat-step>
+          <ng-template matStepLabel>
+            Finish setting up your profile
+          </ng-template>
+          <div class="intro">
+            <h1>Finish setting up your profile</h1>
+            <div class="details">
+              <img
+                src="../../../assets/profile_data.svg"
+                alt="Profile data image"
+              />
+              <p>
+                We're gonna ask you a few questions to get to know you better.
+                <br />
+                Fill them out, and we'll have you on your way to greatness in a
+                couple of minutes
+              </p>
+            </div>
+            <button mat-button matStepperNext type="button">Next</button>
+          </div>
+        </mat-step>
 
-      <mat-stepper orientation="vertical" [linear]="linearSteps">
         <mat-step
           [stepControl]="phoneNumberForm"
+          [editable]="false"
           [errorMessage]="getPhoneNumberErrors()"
         >
-          <ng-template matStepLabel>Fill out your phone number</ng-template>
+          <ng-template matStepLabel>What is your phone number?*</ng-template>
           <form [formGroup]="phoneNumberForm" (submit)="submitPhone()">
             <mat-form-field>
               <mat-label>Country</mat-label>
@@ -43,7 +67,14 @@
               }
             </mat-form-field>
 
-            @if (!phoneSaved) { @if (phoneValid) { @if (!loading) {
+            @if (loading) {
+            <app-loading-button
+              [color]="'accent'"
+              [variant]="'stroked'"
+              [contentText]="'Saving...'"
+              aria-label="Saving"
+            ></app-loading-button>
+            } @else if (!phoneSaved && phoneValid) {
             <button
               mat-stroked-button
               color="primary"
@@ -52,18 +83,11 @@
             >
               Save
             </button>
-            } @else {
-            <app-loading-button
-              [color]="'accent'"
-              [variant]="'stroked'"
-              [contentText]="'Saving...'"
-              aria-label="Saving"
-            ></app-loading-button>
-            } } @else {
+            } @else if (!phoneSaved && !phoneValid) {
             <button mat-button disabled aria-disabled="true" aria-label="Save">
               Save
             </button>
-            } } @else {
+            } @else {
             <button
               mat-stroked-button
               color="primary"
@@ -92,7 +116,7 @@
           [optional]="optionalStep"
           [errorMessage]="getAboutMeErrors()"
         >
-          <ng-template matStepLabel>Tell us a bit about yourself</ng-template>
+          <ng-template matStepLabel>A bit about you </ng-template>
           <form [formGroup]="aboutMeForm" (submit)="submitAboutMe()">
             <mat-form-field>
               <mat-label>About Me</mat-label>
@@ -114,7 +138,14 @@
               <mat-error>{{ getAboutMeErrors() }}</mat-error>
               }
             </mat-form-field>
-            @if (!aboutMeSaved) { @if (aboutMeValid) { @if (!loading) {
+            @if (loading) {
+            <app-loading-button
+              [color]="'accent'"
+              [variant]="'stroked'"
+              [contentText]="'Saving...'"
+              aria-label="Saving"
+            ></app-loading-button>
+            } @else if (!aboutMeSaved && aboutMeValid) {
             <button
               mat-stroked-button
               color="primary"
@@ -123,18 +154,11 @@
             >
               Save
             </button>
-            } @else {
-            <app-loading-button
-              [color]="'accent'"
-              [variant]="'stroked'"
-              [contentText]="'Saving...'"
-              aria-label="Saving"
-            ></app-loading-button>
-            } } @else {
+            } @else if (!aboutMeSaved && !aboutMeValid) {
             <button mat-button disabled aria-disabled="true" aria-label="Save">
               Save
             </button>
-            } } @else {
+            } @else {
             <button
               mat-stroked-button
               color="primary"
@@ -176,7 +200,7 @@
           [errorMessage]="getProfilePictureErrors()"
           [stepControl]="profilePictureForm"
         >
-          <ng-template matStepLabel>Pick a profile picture</ng-template>
+          <ng-template matStepLabel> Profile picture </ng-template>
           <form
             [formGroup]="profilePictureForm"
             (submit)="submitProfilePicture()"
@@ -195,8 +219,14 @@
               </mat-hint>
             </mat-form-field>
 
-            @if (!profilePictureSaved) { @if (profilePictureValid) { @if
-            (!loading) {
+            @if (loading) {
+            <app-loading-button
+              [color]="'accent'"
+              [variant]="'stroked'"
+              [contentText]="'Saving...'"
+              aria-label="Saving"
+            ></app-loading-button>
+            } @else if (!profilePictureSaved && profilePictureValid) {
             <button
               mat-stroked-button
               color="primary"
@@ -205,23 +235,16 @@
             >
               Save
             </button>
-            } @else {
-            <app-loading-button
-              [color]="'accent'"
-              [variant]="'stroked'"
-              [contentText]="'Saving...'"
-              aria-label="Saving"
-            ></app-loading-button>
-            } } @else {
+            } @else if (!profilePictureSaved && !profilePictureValid) {
             <button mat-button disabled aria-disabled="true" aria-label="Save">
               Save
             </button>
-            } } @else {
+            } @else {
             <button
               mat-stroked-button
               color="primary"
               type="submit"
-              aria-label="profile Picture has been saved"
+              aria-label="Profile picture has been saved"
               disabled
             >
               Saved!
@@ -247,7 +270,7 @@
                 alt="Profile Picture"
               />
             </mat-card-header>
-            @if (imageLoadError) {
+            @if (imageLoadError && profilePictureControl.touched) {
             <mat-card-content>
               <img
                 src="../../../assets/warning.svg"
@@ -263,11 +286,15 @@
           </mat-card>
 
           <button mat-button matStepperPrevious type="button">Back</button>
+          @if (profileCoverImageControl.touched) {
           <button mat-button matStepperNext type="button">Next</button>
+          } @else {
+          <button mat-button matStepperNext type="button">Skip</button>
+          }
         </mat-step>
 
         <mat-step [optional]="optionalStep">
-          <ng-template matStepLabel>Pick a background image</ng-template>
+          <ng-template matStepLabel> Profile background image </ng-template>
           <div
             class="profile-cover"
             [style]="
@@ -292,38 +319,37 @@
                 </mat-hint>
               </mat-form-field>
 
-              @if(!profileCoverImageSaved) { @if(profileCoverValid) {
-              @if(!loading) {
-              <button
-                mat-flat-button
-                color="primary"
-                type="submit"
-                aria-label="Save Profile Cover Image"
-              >
-                Save
-              </button>
-              } @else {
+              @if (loading) {
               <app-loading-button
                 [color]="'accent'"
-                [variant]="'flat'"
+                [variant]="'stroked'"
                 [contentText]="'Saving...'"
                 aria-label="Saving"
               ></app-loading-button>
-              } } @else {
+              } @else if (!profileCoverImageSaved && profileCoverValid) {
               <button
-                mat-flat-button
+                mat-stroked-button
+                color="primary"
+                type="submit"
+                aria-label="Save Profile Cover"
+              >
+                Save
+              </button>
+              } @else if (!profileCoverImageSaved && !profileCoverValid) {
+              <button
+                mat-button
                 disabled
                 aria-disabled="true"
                 aria-label="Save"
               >
                 Save
               </button>
-              } } @else {
+              } @else {
               <button
-                mat-flat-button
+                mat-stroked-button
                 color="primary"
                 type="submit"
-                aria-label="Cover image has been saved"
+                aria-label="Profile cover has been saved"
                 disabled
               >
                 Saved!
@@ -354,7 +380,14 @@
               </mat-card-content>
             </mat-card>
           </div>
-          <button mat-button matStepperNext type="button">Finish</button>
+          <button
+            mat-button
+            matStepperNext
+            type="button"
+            [routerLink]="['/accounts/profile']"
+          >
+            Finish
+          </button>
         </mat-step>
       </mat-stepper>
     </div>

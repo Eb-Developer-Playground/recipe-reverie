@@ -9,8 +9,8 @@ main {
   background-color: $color-white;
 
   .form-container {
-    margin-top: $--s-unit-4;
-    margin-bottom: $--s-unit-4;
+    // margin-top: $--s-unit-4;
+    // margin-bottom: $--s-unit-4;
     margin-left: auto;
     margin-right: auto;
     padding: 0 $--s-unit-4;
@@ -37,6 +37,32 @@ main {
 
         mat-step {
           width: 100%;
+        }
+
+        .intro {
+          display: flex;
+          flex-direction: column;
+          gap: $--s-unit-2;
+          @media (min-width: $--lg) {
+            gap: $--s-unit-8;
+          }
+
+          .details {
+            display: flex;
+            flex-direction: row;
+            gap: $--s-unit-16;
+            align-items: center;
+            justify-content: space-evenly;
+
+            img {
+              max-height: 50%;
+              width: 40%;
+              flex-grow: 1;
+            }
+            p {
+              flex-grow: 1;
+            }
+          }
         }
 
         mat-card {

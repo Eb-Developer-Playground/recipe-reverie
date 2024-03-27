@@ -60,6 +60,11 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+// Add padding to every page to compensate for the persistent navbar
+main {
+  padding-top: $--s-unit-16;
+}
+
 @layer global-reset {
   /*
 ! tailwindcss v3.3.3 | MIT License | https://tailwindcss.com

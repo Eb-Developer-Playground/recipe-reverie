@@ -1,5 +1,7 @@
 // Angular Imports
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import {
   FormsModule,
   FormBuilder,
@@ -7,7 +9,7 @@ import {
   ReactiveFormsModule,
   FormControl,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 // Angular Material Imports
 import { MatButtonModule } from '@angular/material/button';
@@ -28,11 +30,13 @@ import { updateDetails } from '@shared/services/mock-backend.service';
 
 // Component Imports
 import { LoadingButtonComponent } from '@shared/components/loading-button/loading-button.component';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-new-profile',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     MatButtonModule,
     MatCardModule,
@@ -42,6 +46,7 @@ import { LoadingButtonComponent } from '@shared/components/loading-button/loadin
     MatSelectModule,
     MatStepperModule,
     ReactiveFormsModule,
+    RouterModule,
     LoadingButtonComponent,
   ],
   providers: [
@@ -55,14 +60,19 @@ export class NewProfileComponent {
   router = inject(Router);
   snackbar = inject(SnackbarService);
   userService = inject(UserService);
+  breakpoint = inject(BreakpointObserver);
+  windowObserver = this.breakpoint
+    .observe('(min-width: 1280px)')
+    .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
 
   user = this.userService.userDetails;
 
   readonly defaultAvatar = 'https://api.dicebear.com/8.x/thumbs/svg?radius=50';
+  readonly defaultBackground = 'https://random.imagecdn.app/500/150';
   readonly defaultAboutMe =
     "Welcome to the whimsical realm of my 'About Me.' Here, words mingle in delightful disarray, concocting a blend of essence and wit. Just a hint of humor, a sprinkle of introspection, and a dash of charm await.";
 
-  linearSteps = true;
+  linearSteps = false;
   loading = false;
   optionalStep = true;
 
@@ -98,7 +108,7 @@ export class NewProfileComponent {
   });
 
   profilePictureForm = this.formBuilder.group({
-    profilePicture: [''],
+    profilePicture: [this.defaultAvatar],
   });
 
   profileCoverImageForm = this.formBuilder.group({
