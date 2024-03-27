@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 
+//> app.component.ts
+// import 'zone.js/plugins/zone-patch-rxjs';
+// Trying to get away without zone js first
+
 @Component({
   selector: 'app-root',
   standalone: true,
