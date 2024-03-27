@@ -371,9 +371,15 @@ export interface Auth {
 
 export interface updateDetails {
   name?: string;
-  phoneNumber?: string;
+
   countryCode?: string;
+  phoneNumber?: string;
+
+  city?: string;
+  country?: string;
+
   aboutMe?: string;
+
   profilePicture?: string;
   profileCoverImage?: string;
 }

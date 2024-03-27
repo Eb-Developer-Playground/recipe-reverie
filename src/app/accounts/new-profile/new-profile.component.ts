@@ -27,6 +27,7 @@ import { UserService } from '@shared/services/user.service';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MOBILE_REGEX_PATTERN } from '@shared/utilities/mobile.regex';
 import { updateDetails } from '@shared/services/mock-backend.service';
+import { countries, Country } from 'typed-countries';
 
 // Component Imports
 import { LoadingButtonComponent } from '@shared/components/loading-button/loading-button.component';
@@ -66,6 +67,7 @@ export class NewProfileComponent {
     .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
 
   user = this.userService.userDetails;
+  readonly countries: Country[] = countries;
 
   readonly defaultAvatar = 'https://api.dicebear.com/8.x/thumbs/svg?radius=50';
   readonly defaultBackground = 'https://random.imagecdn.app/500/150';
@@ -78,11 +80,12 @@ export class NewProfileComponent {
 
   phoneSaved = false;
   aboutMeSaved = false;
+  locationSaved = false;
   profilePictureSaved = false;
   profileCoverImageSaved = false;
   imageLoadError = false;
 
-  readonly countries: { name: string; code: string }[] = [
+  readonly countriesCodes: { name: string; code: string }[] = [
     { name: 'Kenya', code: '254' },
     { name: 'Tanzania', code: '255' },
     { name: 'Uganda', code: '256' },
@@ -105,6 +108,11 @@ export class NewProfileComponent {
 
   aboutMeForm = this.formBuilder.group({
     aboutMe: ['', [Validators.maxLength(300), Validators.minLength(50)]],
+  });
+
+  locationForm = this.formBuilder.group({
+    city: ['', [Validators.minLength(3), Validators.maxLength(30)]],
+    country: ['', Validators.required],
   });
 
   profilePictureForm = this.formBuilder.group({
@@ -159,6 +167,38 @@ export class NewProfileComponent {
         await this.userService.updateUserDetails(updates);
         this.loading = false;
         this.aboutMeSaved = true;
+      } catch (error) {
+        let thrownError = error as Error;
+        this.snackbar.openSnackBarNoAction(thrownError.message, 4000);
+        this.loading = false;
+      }
+    }
+  }
+
+  async submitLocation() {
+    if (this.locationForm.invalid) return;
+
+    const values = this.locationForm.value;
+    const city = values.city;
+    const country = values.country;
+
+    if (country) {
+      let updates: updateDetails;
+      if (city)
+        updates = {
+          country: country,
+          city: city,
+        };
+      else
+        updates = {
+          country: country,
+        };
+
+      try {
+        this.loading = true;
+        await this.userService.updateUserDetails(updates);
+        this.loading = false;
+        this.locationSaved = true;
       } catch (error) {
         let thrownError = error as Error;
         this.snackbar.openSnackBarNoAction(thrownError.message, 4000);
@@ -253,6 +293,7 @@ export class NewProfileComponent {
   }
   // END TODO
 
+  // Getters
   get countryCodeControl() {
     return this.phoneNumberForm.get('countryCode') as FormControl;
   }
@@ -264,6 +305,12 @@ export class NewProfileComponent {
   }
   get aboutMeText() {
     return this.aboutMeControl.value as string;
+  }
+  get cityControl() {
+    return this.locationForm.get('city') as FormControl;
+  }
+  get countryControl() {
+    return this.locationForm.get('country') as FormControl;
   }
   get profilePictureControl() {
     return this.profilePictureForm.get('profilePicture') as FormControl;
@@ -277,6 +324,9 @@ export class NewProfileComponent {
   }
   get aboutMeValid() {
     return this.aboutMeForm.valid;
+  }
+  get locationValid() {
+    return this.locationForm.valid;
   }
   get profilePictureValid() {
     return this.profilePictureForm.valid;
@@ -303,8 +353,19 @@ export class NewProfileComponent {
       return 'The input description is too long';
     if (this.aboutMeControl.hasError('minlength'))
       return 'The input description is too short. Aim for 50 characters';
-
-    let text = this.aboutMeControl.value as string;
+    return '';
+  }
+  getCityErrors() {
+    if (
+      this.cityControl.hasError('minlength') ||
+      this.cityControl.hasError('maxlength')
+    )
+      return 'Please enter a valid city';
+    return '';
+  }
+  getCountryErrors() {
+    if (this.countryControl.hasError('required'))
+      return 'Your country of residence is required';
     return '';
   }
   getProfilePictureErrors() {

@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { AuthService } from '@shared/services/auth.service';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
@@ -12,4 +11,6 @@ import { UserService } from '@shared/services/user.service';
 export class ProfileComponent {
   userService = inject(UserService);
   user = this.userService.userDetails;
+
+  ownProfile: boolean = true;
 }

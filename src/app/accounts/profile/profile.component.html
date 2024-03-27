@@ -1,6 +1,13 @@
 <main class="main">
   <section class="profile-top-bg">
-    <div class="profile-bg-image">
+    <div
+      class="profile-bg-image"
+      [style]="
+        user()?.profileCoverImage
+          ? 'background-image: url(' + user()?.profileCoverImage + ')'
+          : ''
+      "
+    >
       <span id="black-overlay"></span>
     </div>
     <div class="main__unique2" style="transform: translateZ(0px)">
@@ -26,16 +33,22 @@
                 <img
                   alt="..."
                   [src]="
-                    'https://api.dicebear.com/8.x/personas/svg?radius=50&backgroundType=solid' +
-                    '&seed=' +
-                    user()?.email
+                    user()?.profilePicture
+                      ? user()?.profilePicture
+                      : 'https://api.dicebear.com/8.x/personas/svg?radius=50&backgroundType=solid' +
+                        '&seed=' +
+                        user()?.email
                   "
                 />
               </div>
             </div>
             <div class="main__unique7">
               <div class="main__unique9">
+                @if (ownProfile) {
+                <button type="button">Edit</button>
+                } @else {
                 <button type="button">Connect</button>
+                }
               </div>
             </div>
             <div class="main__unique10">
@@ -46,7 +59,7 @@
                 </div>
                 <div class="main__unique16">
                   <span class="main__unique14">10</span
-                  ><span class="main__unique15">Photos</span>
+                  ><span class="main__unique15">Recipes</span>
                 </div>
                 <div class="main__unique17">
                   <span class="main__unique18">89</span
@@ -59,27 +72,25 @@
             <h3>{{ user()?.name }}</h3>
             <div class="main__unique22">
               <i class="main__unique24"></i>
-              Los Angeles, California
-            </div>
-            <div class="main__unique23">
-              <i class="main__unique25"></i>Solution Manager - Creative Tim
-              Officer
-            </div>
-            <div class="main__unique26">
-              <i class="main__unique27"></i>University of Computer Science
+              <span>{{ user()?.city }}</span
+              ><span>{{ user()?.country ? ", " + user()?.country : "" }}</span>
             </div>
           </div>
           <div class="main__unique28">
             <div class="main__unique29">
               <div class="main__unique30">
+                @if (user()?.aboutMe) {
                 <p>
-                  An artist of considerable range, Jenna the name taken by
-                  Melbourne-raised, Brooklyn-based Nick Murphy writes, performs
-                  and records all of his own music, giving it a warm, intimate
-                  feel with a solid groove structure. An artist of considerable
-                  range.
+                  {{ user()?.aboutMe }}
                 </p>
-                <a>Show more</a>
+                } @else {
+                <p>
+                  Welcome to the whimsical realm of my 'About Me.' Here, words
+                  mingle in delightful disarray, concocting a blend of essence
+                  and wit. Just a hint of humor, a sprinkle of introspection,
+                  and a dash of charm await.
+                </p>
+                }
               </div>
             </div>
           </div>
