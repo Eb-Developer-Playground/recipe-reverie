@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { User } from '@shared/interfaces/user.interface';
 import { MockBackendService } from './mock-backend.service';
@@ -11,6 +11,14 @@ export class AuthService {
   backend = inject(MockBackendService);
 
   authState = toSignal(this.backend.auth());
+
+  isAuthenticated = computed(() => {
+    const state = this.authState()?.valid;
+    console.log('Auth state:', state);
+    console.log('Auth signal value:', this.authState());
+    if (state) return state;
+    return false;
+  });
 
   async login(email: string, password: string) {
     try {

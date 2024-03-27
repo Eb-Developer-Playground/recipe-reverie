@@ -3,6 +3,7 @@ import { User } from '@shared/interfaces/user.interface';
 import { StorageService } from './storage.service';
 import { MockBackendService, updateDetails } from './mock-backend.service';
 import { AuthService } from './auth.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +14,7 @@ export class UserService {
   backend = inject(MockBackendService);
   auth = inject(AuthService);
 
-  userDetails = computed(() => {
-    const email = this.auth.authState()?.email;
-    if (email) return this.backend.getUser(email);
-    else return null;
-  });
+  userDetails = toSignal(this.backend.user());
 
   setUserDetails(user: User) {
     return new Promise((resolve) => resolve(this.backend.setUser(user)));

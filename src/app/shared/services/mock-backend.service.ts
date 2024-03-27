@@ -16,15 +16,25 @@ export class MockBackendService {
   readonly PASSWORD_INCORRECT = 'Password is incorrect';
   readonly TOKEN_DOES_NOT_EXIST = 'Token does not exist';
 
-  private authSubject = new BehaviorSubject<Auth>({
+  readonly DEFAULT_AUTH_OBJECT: Auth = {
     email: '',
     token: '',
     valid: false,
     loading: false,
-  });
+  };
+  readonly DEFAULT_USER_OBJECT: User = { id: '', name: '', email: '' };
+
+  private $authSubject = new BehaviorSubject<Auth>(this.DEFAULT_AUTH_OBJECT);
+
+  private $sessionUserSubject = new BehaviorSubject<User>(
+    this.DEFAULT_USER_OBJECT
+  );
 
   auth() {
-    return this.authSubject.asObservable();
+    return this.$authSubject.asObservable();
+  }
+  user() {
+    return this.$sessionUserSubject.asObservable();
   }
 
   createUser(email: string, password: string, user: User) {
@@ -83,17 +93,14 @@ export class MockBackendService {
       email: user.email,
     };
     this.updateUserDetails(email, newUser);
+
+    // Update the user subject with the new info
+    this.$sessionUserSubject.next(this.getUserDetailsNoNull(email));
   }
 
   signIn(email: string, password: string) {
-    let finalAuth: string;
     return new Promise<boolean>(async (resolve, reject) => {
-      this.authSubject.next({
-        email: '',
-        token: '',
-        valid: false,
-        loading: true,
-      });
+      this.$authSubject.next(this.DEFAULT_AUTH_OBJECT);
 
       let valid = false;
 
@@ -118,12 +125,15 @@ export class MockBackendService {
         return;
       }
 
+      const authToken = this.getTokenNoNull(email);
+      console.log('Auth token:', authToken);
       await this.artificialLoadingDelayAuthNext({
         email: email,
-        token: this.getTokenNoNull(email),
+        token: authToken,
         valid: true,
         loading: false,
       });
+      this.$sessionUserSubject.next(this.getUserDetailsNoNull(email));
       resolve(true);
     });
   }
@@ -131,22 +141,13 @@ export class MockBackendService {
   signOut() {
     return new Promise(async (resolve, reject) => {
       try {
-        this.authSubject.next({
-          email: '',
-          token: '',
-          valid: false,
-          loading: true,
-        });
+        this.$authSubject.next(this.DEFAULT_AUTH_OBJECT);
 
         this.removeAuth();
         this.removeSessionEmail();
 
-        await this.artificialLoadingDelayAuthNext({
-          email: '',
-          token: '',
-          valid: false,
-          loading: false,
-        });
+        this.$sessionUserSubject.next(this.DEFAULT_USER_OBJECT);
+        await this.artificialLoadingDelayAuthNext(this.DEFAULT_AUTH_OBJECT);
 
         resolve(true);
       } catch (error) {
@@ -355,7 +356,7 @@ export class MockBackendService {
     const delay = Math.round(Math.random() * factor1 * Math.random() * factor2);
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(this.authSubject.next(auth));
+        resolve(this.$authSubject.next(auth));
       }, delay);
     });
   }
