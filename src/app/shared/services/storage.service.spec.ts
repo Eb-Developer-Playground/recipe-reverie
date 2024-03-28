@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
-import { StorageService } from './storage.service';
-import { isRxDatabase } from 'rxdb';
+import { RxDBSchema, StorageService } from './storage.service';
+import { isRxCollection, isRxDatabase } from 'rxdb';
 
 describe('StorageService', () => {
   let service: StorageService;
@@ -67,6 +67,37 @@ describe('StorageService', () => {
     describe('createRxDatabase()', () => {
       it('should initialize on service initialization', () => {
         expect(isRxDatabase(service._database)).toBeDefined;
+        expect(isRxDatabase(service._database)).toEqual(true);
+      });
+    });
+    describe('createRxCollection()', () => {
+      it('should create a collection', async () => {
+        const testName = 'test';
+        const testSchema: RxDBSchema = {
+          version: 0,
+          primaryKey: testName,
+          type: 'string',
+          properties: {
+            [testName]: {
+              type: 'string',
+            },
+          },
+          required: [testName],
+        };
+
+        const collections = await service.createRxCollection(
+          testName + '-collection',
+          testSchema
+        );
+        console.log(collections);
+        const retrievedCollection =
+          service._database?.[testName + '-collection'];
+
+        expect(retrievedCollection).toBeDefined();
+        expect(isRxCollection(retrievedCollection)).toEqual(true);
+        expect(collections?.[testName + '-collection']).toEqual(
+          retrievedCollection
+        );
       });
     });
   });

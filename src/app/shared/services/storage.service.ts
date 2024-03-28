@@ -152,6 +152,7 @@ export interface RxDBSchema {
   properties: {
     [keys: string]: {
       type: string;
+      final?: boolean;
       [keys: string]: any;
     };
   };
